@@ -4,6 +4,7 @@ dotenv.config();
 
 // Core
 import { NestFactory } from '@nestjs/core';
+import { ValidationPipe } from '@nestjs/common';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 
 // Modules
@@ -11,6 +12,7 @@ import { AppModule } from './app.module';
 
 // Middleware
 import * as helmet from 'helmet';
+import * as bodyParser from 'body-parser';
 
 async function bootstrap() {
   // App
@@ -18,6 +20,8 @@ async function bootstrap() {
 
   // Middleware
   app.use(helmet());
+  app.use(bodyParser.json());
+  app.useGlobalPipes(new ValidationPipe());
   app.setGlobalPrefix('api');
 
   // Swagger documentation
