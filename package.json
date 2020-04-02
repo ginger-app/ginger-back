@@ -7,7 +7,7 @@
   "license": "UNLICENSED",
   "scripts": {
     "build": "rimraf dist && tsc -p tsconfig.build.json",
-    "docker:refresh": "docker-compose down && docker-compose build && docker-compose up",
+    "docker:refresh": "docker-compose down && docker-compose build && docker-compose up --rm",
     "format": "prettier --write \"src/**/*.ts\"",
     "start": "ts-node -r tsconfig-paths/register src/main.ts",
     "start:dev": "tsc-watch -p tsconfig.build.json --onSuccess \"node dist/main.js\"",
