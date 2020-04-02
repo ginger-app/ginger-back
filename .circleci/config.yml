@@ -9,12 +9,8 @@ jobs:
       - checkout
       - node/with-cache:
           steps:
-            - run:
-                - name: Installing dependencies
-                - command: npm install
-            - run:
-                - name: Running tests
-                - command: npm test
+            - run: npm install
+            - run: npm test
 workflows:
   build-and-test:
     jobs:
