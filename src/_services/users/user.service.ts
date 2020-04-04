@@ -26,4 +26,12 @@ export class UserService {
       throw new HttpException(err.message, HttpStatus.BAD_REQUEST);
     }
   }
+
+  async getUser(phoneNumber: string): Promise<Object> {
+    return UserModel.get({ phoneNumber })
+      .then(user => user)
+      .catch(err => {
+        throw new HttpException(err.message, HttpStatus.BAD_REQUEST);
+      });
+  }
 }

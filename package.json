@@ -32,6 +32,8 @@
     "dotenv": "^8.2.0",
     "dynamoose": "^1.11.1",
     "helmet": "^3.22.0",
+    "ioredis": "^4.16.1",
+    "nestjs-redis": "^1.2.7",
     "reflect-metadata": "^0.1.13",
     "rimraf": "^3.0.2",
     "rxjs": "^6.5.4",
