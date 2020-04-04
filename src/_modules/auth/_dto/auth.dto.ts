@@ -1,6 +1,6 @@
 // Validator
 import { ApiProperty } from '@nestjs/swagger';
-import { IsString, IsMobilePhone, IsEmail } from 'class-validator';
+import { IsString, IsMobilePhone, IsEmail, IsBoolean } from 'class-validator';
 
 export class SigninDto {
   @ApiProperty()
@@ -26,4 +26,12 @@ export class SignupDto {
   @ApiProperty()
   @IsString()
   lastName: string;
+
+  @ApiProperty()
+  @IsBoolean()
+  isAdmin: boolean;
+
+  @ApiProperty()
+  @IsBoolean()
+  isWorker: boolean;
 }

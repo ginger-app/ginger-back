@@ -10,6 +10,9 @@ import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 // Modules
 import { AppModule } from './app.module';
 
+// Providers
+import { DynamoDB } from './_services';
+
 // Middleware
 import * as helmet from 'helmet';
 import * as bodyParser from 'body-parser';
@@ -23,6 +26,9 @@ async function bootstrap() {
   app.use(bodyParser.json());
   app.useGlobalPipes(new ValidationPipe());
   app.setGlobalPrefix('api');
+
+  // DB
+  await DynamoDB.init();
 
   // Swagger documentation
   const options = new DocumentBuilder()

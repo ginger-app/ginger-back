@@ -17,11 +17,4 @@ describe('AppController (e2e)', () => {
     app = moduleFixture.createNestApplication();
     await app.init();
   });
-
-  it('/auth/signin (GET)', () => {
-    return request(app.getHttpServer())
-      .get('/auth/signin')
-      .expect(200)
-      .expect('Done!');
-  });
 });
