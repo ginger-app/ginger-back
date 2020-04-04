@@ -10,7 +10,7 @@ import {
 import { Response } from 'express';
 
 // Dto
-import { SigninDto, SignupDto } from './_dto';
+import { SigninDto, SignupDto, ConfirmationDto } from './_dto';
 
 // Services
 import { UserService, SmsService, RedisStorageService } from '../../_services';
@@ -28,6 +28,7 @@ export class AuthController {
     const { phoneNumber }: { phoneNumber: string } = body;
 
     try {
+      // checking if the user already exists
       const user = await this.userService.getUser(phoneNumber);
       // if no user - redirecting to signup
       if (!user)
@@ -35,13 +36,14 @@ export class AuthController {
           .status(302)
           .redirect('https://www.youtube.com/watch?v=dQw4w9WgXcQ');
 
+      // else - sending confirmation code for signing in
       const {
         codeSent,
         number,
         code,
       } = await this.smsService.sendConfirmationCode(phoneNumber);
 
-      // Setting redis to wait for user to input the code
+      // Setting redis value to wait for user to input the code
       await this.redisService.set(phoneNumber, code, 600);
 
       return res.send({ success: true, result: { codeSent, number } });
@@ -62,5 +64,17 @@ export class AuthController {
     } catch (err) {
       throw new HttpException(err.message, HttpStatus.BAD_REQUEST);
     }
+  }
+
+  @Post('/confirmation')
+  async confirmation(@Body() body: ConfirmationDto): Promise<Object> {
+    const { phoneNumber, code } = body;
+
+    const redisCode = await this.redisService.get(phoneNumber);
+
+    if (code !== redisCode)
+      throw new HttpException('Invalid code', HttpStatus.FORBIDDEN);
+
+    return { success: true, userData: {} };
   }
 }

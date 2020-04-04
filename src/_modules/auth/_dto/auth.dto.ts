@@ -35,3 +35,14 @@ export class SignupDto {
   @IsBoolean()
   isWorker: boolean;
 }
+
+export class ConfirmationDto {
+  @ApiProperty()
+  @IsString()
+  @IsMobilePhone('uk-UA')
+  phoneNumber: string;
+
+  @ApiProperty()
+  @IsString()
+  code: string;
+}
