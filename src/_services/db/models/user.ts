@@ -23,6 +23,10 @@ const userSchema = new dynamogoose.Schema({
     required: true,
   },
 
+  userpic: {
+    type: String,
+  },
+
   registrationDate: Date,
   lastVisit: Date,
   averageSessionDuration: {

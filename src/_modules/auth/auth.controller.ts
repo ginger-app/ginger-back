@@ -60,6 +60,9 @@ export class AuthController {
       // We don't want to wait for this or handle errors (UDP style)
       this.smsService.sendWelcomeSms(body.phoneNumber);
 
+      // Also sending an email confirmation
+      // this.emailService.sendConfirmationEmail(body.email)
+
       return { success: true };
     } catch (err) {
       throw new HttpException(err.message, HttpStatus.BAD_REQUEST);
@@ -70,11 +73,15 @@ export class AuthController {
   async confirmation(@Body() body: ConfirmationDto): Promise<Object> {
     const { phoneNumber, code } = body;
 
+    // getting temporary code from redis
     const redisCode = await this.redisService.get(phoneNumber);
 
     if (code !== redisCode)
       throw new HttpException('Invalid code', HttpStatus.FORBIDDEN);
 
-    return { success: true, userData: {} };
+    //TODO if code check was passed - getting data from db (replace this with tokens later)
+    const userData = await this.userService.getUser(phoneNumber);
+
+    return { success: true, userData };
   }
 }
