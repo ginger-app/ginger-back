@@ -16,12 +16,14 @@ import { DynamoDB } from './_services';
 // Middleware
 import * as helmet from 'helmet';
 import * as bodyParser from 'body-parser';
+// import * as cors from 'cors';
 
 async function bootstrap() {
   // App
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create(AppModule, { cors: true });
 
   // Middleware
+  // app.use(cors());
   app.use(helmet());
   app.use(bodyParser.json());
   app.useGlobalPipes(new ValidationPipe());

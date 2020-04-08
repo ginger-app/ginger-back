@@ -25,6 +25,12 @@ const userSchema = new dynamogoose.Schema({
 
   userpic: {
     type: String,
+    default: '',
+  },
+
+  lists: {
+    type: Array,
+    default: [],
   },
 
   registrationDate: Date,
@@ -60,6 +66,11 @@ const userSchema = new dynamogoose.Schema({
   },
 
   orders: {
+    type: Array,
+    default: [],
+  },
+
+  referrals: {
     type: Array,
     default: [],
   },

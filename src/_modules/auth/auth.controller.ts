@@ -46,7 +46,9 @@ export class AuthController {
       // Setting redis value to wait for user to input the code
       await this.redisService.set(phoneNumber, code, 600);
 
-      return res.send({ success: true, result: { codeSent, number } });
+      return res
+        .status(200)
+        .send({ success: true, result: { codeSent, number } });
     } catch (err) {
       throw new HttpException(err.message, HttpStatus.BAD_REQUEST);
     }
