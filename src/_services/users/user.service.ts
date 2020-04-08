@@ -11,17 +11,22 @@ export class UserService {
     email: string;
     firstName: string;
     lastName: string;
-    isAdmin: boolean;
-    isWorker: boolean;
+    isAdmin?: boolean;
+    isWorker?: boolean;
   }) {
+    const { isAdmin, isWorker } = data;
+
     try {
       const newUser = new UserModel({
         ...data,
+        isAdmin: isAdmin || false,
+        isWorker: isWorker || false,
         registrationDate: Date.now(),
         lastVisit: Date.now(),
       });
 
-      await newUser.save();
+      const userData = await newUser.save();
+      return userData;
     } catch (err) {
       throw new HttpException(err.message, HttpStatus.BAD_REQUEST);
     }

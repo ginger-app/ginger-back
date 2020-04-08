@@ -5,9 +5,7 @@ import {
   Body,
   HttpException,
   HttpStatus,
-  Res,
 } from '@nestjs/common';
-import { Response } from 'express';
 
 // Dto
 import { SigninDto, SignupDto, ConfirmationDto } from './_dto';
@@ -24,17 +22,14 @@ export class AuthController {
   ) {}
 
   @Post('/signin')
-  async signin(@Body() body: SigninDto, @Res() res: Response) {
+  async signin(@Body() body: SigninDto) {
     const { phoneNumber }: { phoneNumber: string } = body;
 
     try {
       // checking if the user already exists
       const user = await this.userService.getUser(phoneNumber);
       // if no user - redirecting to signup
-      if (!user)
-        return res
-          .status(302)
-          .redirect('https://www.youtube.com/watch?v=dQw4w9WgXcQ');
+      if (!user) throw new Error('No such user found');
 
       // else - sending confirmation code for signing in
       const {
@@ -46,9 +41,32 @@ export class AuthController {
       // Setting redis value to wait for user to input the code
       await this.redisService.set(phoneNumber, code, 600);
 
-      return res
-        .status(200)
-        .send({ success: true, result: { codeSent, number } });
+      return { success: true, result: { codeSent, number } };
+    } catch (err) {
+      throw new HttpException(err.message, HttpStatus.BAD_REQUEST);
+    }
+  }
+
+  @Post('/get-signup-code')
+  async getSignupCode(@Body() body: SigninDto) {
+    const { phoneNumber }: { phoneNumber: string } = body;
+
+    try {
+      // checking if the user already exists
+      const user = await this.userService.getUser(phoneNumber);
+      if (user) throw new Error('User already exists');
+
+      // else - sending confirmation code for signing in
+      const {
+        codeSent,
+        number,
+        code,
+      } = await this.smsService.sendConfirmationCode(phoneNumber);
+
+      // Setting redis value to wait for user to input the code
+      await this.redisService.set(phoneNumber, code, 600);
+
+      return { success: true, result: { codeSent, number } };
     } catch (err) {
       throw new HttpException(err.message, HttpStatus.BAD_REQUEST);
     }
@@ -56,22 +74,27 @@ export class AuthController {
 
   @Post('/signup')
   async signup(@Body() body: SignupDto): Promise<Object> {
-    try {
-      await this.userService.createUser(body);
+    const { phoneNumber, code } = body;
 
-      // We don't want to wait for this or handle errors (UDP style)
-      this.smsService.sendWelcomeSms(body.phoneNumber);
+    // getting temporary code from redis
+    const redisCode = await this.redisService.get(phoneNumber);
+
+    if (code !== redisCode)
+      throw new HttpException('Invalid code', HttpStatus.FORBIDDEN);
+
+    try {
+      const createdUser = await this.userService.createUser(body);
 
       // Also sending an email confirmation
       // this.emailService.sendConfirmationEmail(body.email)
 
-      return { success: true };
+      return { success: true, userData: createdUser };
     } catch (err) {
       throw new HttpException(err.message, HttpStatus.BAD_REQUEST);
     }
   }
 
-  @Post('/confirmation')
+  @Post('/signin-confirmation')
   async confirmation(@Body() body: ConfirmationDto): Promise<Object> {
     const { phoneNumber, code } = body;
 
