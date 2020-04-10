@@ -3,13 +3,13 @@ import * as dynamogoose from 'dynamoose';
 
 // Schemas
 const subCategorySchema = new dynamogoose.Schema({
-  name: {
-    type: String,
+  id: {
+    type: Number,
     required: true,
   },
 
-  id: {
-    type: Number,
+  name: {
+    type: String,
     required: true,
   },
 
@@ -17,16 +17,21 @@ const subCategorySchema = new dynamogoose.Schema({
     type: Number,
     required: true,
   },
+
+  items: {
+    type: Array,
+    required: true,
+  },
 });
 
 const categorySchema = new dynamogoose.Schema({
-  name: {
-    type: String,
+  id: {
+    type: Number,
     required: true,
   },
 
-  id: {
-    type: Number,
+  name: {
+    type: String,
     required: true,
   },
 
@@ -51,17 +56,27 @@ const marketItemSchema = new dynamogoose.Schema({
     required: true,
   },
 
-  spec: {
-    type: Number,
-    required: true,
-  },
-
-  name: {
+  searchName: {
     type: String,
     required: true,
   },
 
-  description: {
+  nameUkr: {
+    type: String,
+    required: true,
+  },
+
+  nameRu: {
+    type: String,
+    required: true,
+  },
+
+  descriptionUkr: {
+    type: String,
+    required: true,
+  },
+
+  descriptionRu: {
     type: String,
     required: true,
   },
@@ -93,6 +108,10 @@ const marketItemSchema = new dynamogoose.Schema({
 });
 
 const orderSchema = new dynamogoose.Schema({
+  id: {
+    type: String,
+    required: true,
+  },
   date: {
     type: Date,
     required: true,
@@ -116,7 +135,7 @@ const orderSchema = new dynamogoose.Schema({
     required: true,
   },
   userCart: {
-    type: Object,
+    type: Array,
     // map: {
     //   item: Number,
     //   amount: Number,
@@ -124,7 +143,7 @@ const orderSchema = new dynamogoose.Schema({
     required: true,
   },
   actualCart: {
-    type: Object,
+    type: Array,
     // map: {
     //   item: Number,
     //   amount: Number,
