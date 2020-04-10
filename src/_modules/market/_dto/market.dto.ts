@@ -6,6 +6,8 @@ import {
   IsIn,
   IsObject,
   IsDateString,
+  IsOptional,
+  Allow,
 } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 
@@ -123,4 +125,33 @@ export class Order {
   @ApiProperty()
   @IsString()
   client: string;
+}
+export class UpdateOrder {
+  @ApiProperty()
+  @IsOptional()
+  @IsNumber()
+  sum: number;
+
+  @ApiProperty()
+  @IsOptional()
+  @IsString()
+  @IsIn([
+    'Awaiting payment',
+    'Awaiting collection',
+    'Awaiting shipment',
+    'Shipping',
+    'Completed',
+    'Pending',
+  ])
+  status: string;
+
+  @ApiProperty()
+  @IsOptional()
+  @IsObject()
+  actualCart: Object;
+
+  @ApiProperty()
+  @IsOptional()
+  @IsString()
+  address: string;
 }

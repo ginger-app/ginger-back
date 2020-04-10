@@ -7,13 +7,17 @@ import {
   Query,
   Param,
   Put,
+  Body,
 } from '@nestjs/common';
 
 // Dto
-// import { MarketCategory, MarketItem, MarketSubcategory } from './_dto';
+import { UpdateOrder } from './_dto';
 
 // Services
 import { MarketService } from '../../_services';
+
+// Instruments
+import { validate } from 'class-validator';
 
 @Controller('market')
 export class MarketController {
@@ -83,10 +87,21 @@ export class MarketController {
   }
 
   @Get('/orders/:id')
-  async getOrderById(@Param('id') id: string) {}
+  async getOrderById(@Param('id') id: string) {
+    const data = await this.marketService.getOrderById(id);
+
+    if (!data)
+      throw new HttpException('Order does not exist', HttpStatus.NOT_FOUND);
+
+    return { success: true, data };
+  }
 
   @Put('/orders/:id')
-  async updateOrderById(@Param('id') id: string) {}
+  async updateOrderById(@Param('id') id: string, @Body() body: UpdateOrder) {
+    const data = await this.marketService.updateOrderById(id, body);
+
+    return { success: true, data };
+  }
 
   // Test shit
   @Get('/test')

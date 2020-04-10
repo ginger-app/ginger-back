@@ -3,6 +3,7 @@ import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
 
 // Models
 import { Category, Subcategory, MarketItemModel, Order } from '../db/models';
+import { throwError } from 'rxjs';
 
 @Injectable()
 export class MarketService {
@@ -70,6 +71,38 @@ export class MarketService {
     try {
       const data = await Order.scan().exec();
       return data;
+    } catch (err) {
+      throw new HttpException(err.message, HttpStatus.BAD_REQUEST);
+    }
+  }
+
+  async getOrderById(id: string) {
+    try {
+      const data = await Order.queryOne({ id }).exec();
+      return data;
+    } catch (err) {
+      throw new HttpException(err.message, HttpStatus.BAD_REQUEST);
+    }
+  }
+
+  async updateOrderById(id: string, data: object) {
+    try {
+      const order: any = await Order.queryOne({ id }).exec();
+
+      if (!order) throw new Error('Order does not exist');
+
+      const updatedOrder = new Order({
+        ...order,
+        ...data,
+        id,
+        client: order.client,
+        date: order.date,
+        userCart: order.userCart,
+      });
+
+      const result = await updatedOrder.save();
+
+      return result;
     } catch (err) {
       throw new HttpException(err.message, HttpStatus.BAD_REQUEST);
     }
