@@ -8,10 +8,11 @@ import {
   Param,
   Put,
   Body,
+  Post,
 } from '@nestjs/common';
 
 // Dto
-import { UpdateOrder } from './_dto';
+import { UpdateOrder, Order } from './_dto';
 
 // Services
 import { MarketService } from '../../_services';
@@ -98,6 +99,17 @@ export class MarketController {
     const data = await this.marketService.updateOrderById(id, body);
 
     return { success: true, data };
+  }
+
+  @Post('/orders')
+  async createNewOrder(@Body() body: Order) {
+    try {
+      const order = await this.marketService.createNewOrder(body);
+
+      return { success: true, data: order };
+    } catch (err) {
+      throw new HttpException(err.message, HttpStatus.BAD_REQUEST);
+    }
   }
 
   // Test shit

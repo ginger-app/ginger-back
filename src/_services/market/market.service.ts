@@ -4,6 +4,12 @@ import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
 // Models
 import { Category, Subcategory, MarketItemModel, Order } from '../db/models';
 
+// Providers
+import { UserService } from '../users';
+
+// Dto
+import { Order as OrderDto } from '../../_modules/market/_dto';
+
 // test data
 const testData = {
   marketCategories: [
@@ -216,6 +222,8 @@ const testData = {
 
 @Injectable()
 export class MarketService {
+  constructor(private userService: UserService) {}
+
   // Categories
   async getAllGategories() {
     try {
@@ -311,6 +319,21 @@ export class MarketService {
       });
 
       const result = await updatedOrder.save();
+
+      return result;
+    } catch (err) {
+      throw new HttpException(err.message, HttpStatus.BAD_REQUEST);
+    }
+  }
+
+  async createNewOrder(data: OrderDto) {
+    const id = Date.now().toString();
+
+    try {
+      const order = new Order({ ...data, id });
+      const result = await order.save();
+
+      await this.userService.createNewUserOrder(data.client, id);
 
       return result;
     } catch (err) {
