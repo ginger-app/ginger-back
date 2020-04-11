@@ -16,9 +16,6 @@ import { UpdateOrder } from './_dto';
 // Services
 import { MarketService } from '../../_services';
 
-// Instruments
-import { validate } from 'class-validator';
-
 @Controller('market')
 export class MarketController {
   constructor(private marketService: MarketService) {}

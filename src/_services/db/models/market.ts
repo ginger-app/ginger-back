@@ -3,8 +3,8 @@ import * as dynamogoose from 'dynamoose';
 
 // Schemas
 const subCategorySchema = new dynamogoose.Schema({
-  id: {
-    type: Number,
+  sku: {
+    type: String,
     required: true,
   },
 
@@ -22,11 +22,16 @@ const subCategorySchema = new dynamogoose.Schema({
     type: Array,
     required: true,
   },
+
+  tags: {
+    type: Array,
+    required: true,
+  },
 });
 
 const categorySchema = new dynamogoose.Schema({
-  id: {
-    type: Number,
+  sku: {
+    type: String,
     required: true,
   },
 
@@ -42,7 +47,7 @@ const categorySchema = new dynamogoose.Schema({
 
 const marketItemSchema = new dynamogoose.Schema({
   sku: {
-    type: Number,
+    type: String,
     required: true,
   },
 

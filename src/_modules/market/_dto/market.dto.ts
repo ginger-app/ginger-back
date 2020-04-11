@@ -7,7 +7,6 @@ import {
   IsObject,
   IsDateString,
   IsOptional,
-  Allow,
 } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 
@@ -37,6 +36,10 @@ export class MarketSubcategory {
   @ApiProperty()
   @IsString()
   parentSku: string;
+
+  @ApiProperty()
+  @IsArray()
+  tags: Array<string>;
 }
 
 export class MarketItem {
@@ -87,6 +90,10 @@ export class MarketItem {
   @ApiProperty()
   @IsNumber()
   discount: number;
+
+  @ApiProperty()
+  @IsArray()
+  tags: Array<string>;
 }
 
 export class Order {

@@ -3,7 +3,216 @@ import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
 
 // Models
 import { Category, Subcategory, MarketItemModel, Order } from '../db/models';
-import { throwError } from 'rxjs';
+
+// test data
+const testData = {
+  marketCategories: [
+    {
+      sku: '10001',
+      name: 'Category_1',
+      subcategories: ['10001001', '10001002', '10001003'],
+    },
+    {
+      sku: '10002',
+      name: 'Category_2',
+      subcategories: ['10002001', '10002002', '10002003'],
+    },
+    {
+      sku: '10003',
+      name: 'Category_3',
+      subcategories: ['10003001', '10003002', '10003003'],
+    },
+  ],
+
+  marketSubcategories: [
+    {
+      sku: '10001001',
+      parent: '10001',
+      name: 'Subcategory_1_1',
+      tags: ['one', 'two'],
+      items: ['10001001001', '10001001002'],
+    },
+    {
+      sku: '10001002',
+      parent: '10001',
+      name: 'Subcategory_1_2',
+      tags: ['one', 'two'],
+      items: ['10001002003', '10001002004'],
+    },
+    {
+      sku: '10001003',
+      parent: '10001',
+      name: 'Subcategory_1_3',
+      tags: ['one', 'two'],
+      items: ['10002001001', '10002001004'],
+    },
+    {
+      sku: '10002001',
+      parent: '10002',
+      name: 'Subcategory_2_1',
+      tags: ['one', 'two'],
+      items: ['10002002001', '10002002004'],
+    },
+    {
+      sku: '10002002',
+      parent: '10002',
+      name: 'Subcategory_2_2',
+      tags: ['one', 'two'],
+      items: [],
+    },
+    {
+      sku: '10002003',
+      parent: '10002',
+      name: 'Subcategory_2_3',
+      tags: ['one', 'two'],
+      items: [],
+    },
+    {
+      sku: '10003001',
+      parent: '10003',
+      name: 'Subcategory_3_1',
+      tags: ['one', 'two'],
+      items: [],
+    },
+    {
+      sku: '10003002',
+      parent: '10003',
+      name: 'Subcategory_3_2',
+      tags: ['one', 'two'],
+      items: [],
+    },
+    {
+      sku: '10003003',
+      parent: '10003',
+      name: 'Subcategory_3_3',
+      tags: ['one', 'two'],
+      items: [],
+    },
+  ],
+
+  marketItems: [
+    {
+      sku: '10001001001',
+      categories: ['1001'],
+      subcategories: ['1001001'],
+      tags: ['one'],
+      nameUkr: 'Паляниця',
+      nameRu: 'Булочка',
+      descriptionUkr: 'DescrUkr',
+      descriptionRu: 'DescrRu',
+      manufacturer: 'Maenufacturer',
+      measurementValue: 'шт.',
+      stock: 100,
+      price: 100,
+      discount: 0,
+    },
+    {
+      sku: '10001001002',
+      categories: ['1001'],
+      subcategories: ['1001001'],
+      tags: ['two'],
+      nameUkr: 'Кватирка',
+      nameRu: 'Форточка',
+      descriptionUkr: 'DescrUkr',
+      descriptionRu: 'DescrRu',
+      manufacturer: 'Maenufacturer',
+      measurementValue: 'шт.',
+      stock: 100,
+      price: 100,
+      discount: 0,
+    },
+    {
+      sku: '10001002003',
+      categories: ['1001'],
+      subcategories: ['1001002'],
+      tags: ['one'],
+      nameUkr: 'Паляниця',
+      nameRu: 'Булочка',
+      descriptionUkr: 'DescrUkr',
+      descriptionRu: 'DescrRu',
+      manufacturer: 'Maenufacturer',
+      measurementValue: 'шт.',
+      stock: 100,
+      price: 100,
+      discount: 0,
+    },
+    {
+      sku: '10001002004',
+      categories: ['1001'],
+      subcategories: ['1001002'],
+      tags: ['two'],
+      nameUkr: 'Кватирка',
+      nameRu: 'Форточка',
+      descriptionUkr: 'DescrUkr',
+      descriptionRu: 'DescrRu',
+      manufacturer: 'Maenufacturer',
+      measurementValue: 'шт.',
+      stock: 100,
+      price: 100,
+      discount: 0,
+    },
+    {
+      sku: '10002001001',
+      categories: ['1002'],
+      subcategories: ['1002001'],
+      tags: ['one'],
+      nameUkr: 'Паляниця',
+      nameRu: 'Булочка',
+      descriptionUkr: 'DescrUkr',
+      descriptionRu: 'DescrRu',
+      manufacturer: 'Maenufacturer',
+      measurementValue: 'шт.',
+      stock: 100,
+      price: 100,
+      discount: 0,
+    },
+    {
+      sku: '10002001004',
+      categories: ['1002'],
+      subcategories: ['1002001'],
+      tags: ['two'],
+      nameUkr: 'Кватирка',
+      nameRu: 'Форточка',
+      descriptionUkr: 'DescrUkr',
+      descriptionRu: 'DescrRu',
+      manufacturer: 'Maenufacturer',
+      measurementValue: 'шт.',
+      stock: 100,
+      price: 100,
+      discount: 0,
+    },
+    {
+      sku: '10002002001',
+      categories: ['1002'],
+      subcategories: ['1002002'],
+      tags: ['one'],
+      nameUkr: 'Паляниця',
+      nameRu: 'Булочка',
+      descriptionUkr: 'DescrUkr',
+      descriptionRu: 'DescrRu',
+      manufacturer: 'Maenufacturer',
+      measurementValue: 'шт.',
+      stock: 100,
+      price: 100,
+      discount: 0,
+    },
+    {
+      sku: '10002002004',
+      categories: ['1002'],
+      subcategories: ['1002002'],
+      tags: ['two'],
+      nameUkr: 'Кватирка',
+      nameRu: 'Форточка',
+      descriptionUkr: 'DescrUkr',
+      descriptionRu: 'DescrRu',
+      manufacturer: 'Maenufacturer',
+      measurementValue: 'шт.',
+      stock: 100,
+      price: 100,
+      discount: 0,
+    },
+  ],
+};
 
 @Injectable()
 export class MarketService {
@@ -19,7 +228,7 @@ export class MarketService {
 
   async getCategoryBySku(sku: string) {
     try {
-      const data = await Category.queryOne({ id: sku }).exec();
+      const data = await Category.queryOne({ sku }).exec();
       return data;
     } catch (err) {
       throw new HttpException(err.message, HttpStatus.BAD_REQUEST);
@@ -29,7 +238,7 @@ export class MarketService {
   // Subcategories
   async getSubcategoryBySku(sku: string) {
     try {
-      const subcategory: any = await Subcategory.queryOne({ id: sku }).exec();
+      const subcategory: any = await Subcategory.queryOne({ sku }).exec();
 
       // Populating items
       subcategory.items = await Promise.all(
@@ -56,9 +265,10 @@ export class MarketService {
   }
 
   async getMarketItemByName(name: string) {
+    console.log(name);
     try {
       const data = await MarketItemModel.scan({
-        name: { contains: name },
+        searchName: { contains: name.toLowerCase().trim() },
       }).exec();
       return data;
     } catch (err) {
@@ -110,97 +320,39 @@ export class MarketService {
 
   // Test shit
   async createTestModels() {
-    for (let i = 1; i < 11; i++) {
-      const category = new Order({
-        id: Date.now().toString(),
-        date: Date.now(),
-        sum: 1000,
-        status: [
-          'Awaiting payment',
-          'Awaiting collection',
-          'Awaiting shipment',
-          'Shipping',
-          'Completed',
-        ][Math.floor(Math.random() * 5)],
-        userCart: [
-          {
-            item: Number(`100010001`),
-            amount: 100,
-          },
-          {
-            item: Number(`100010002`),
-            amount: 100,
-          },
-          {
-            item: Number(`100010003`),
-            amount: 100,
-          },
-          {
-            item: Number(`100010004`),
-            amount: 100,
-          },
-        ],
+    const { marketCategories, marketSubcategories, marketItems } = testData;
 
-        actualCart: [
-          {
-            item: Number(`100010001`),
-            amount: 101,
-          },
-          {
-            item: Number(`100010002`),
-            amount: 99,
-          },
-          {
-            item: Number(`100010003`),
-            amount: 101,
-          },
-          {
-            item: Number(`100010004`),
-            amount: 99,
-          },
-        ],
-        address: 'Some Address str, 60',
-        client: '+380639990001',
-      });
+    marketCategories.forEach(async item => {
+      try {
+        const category = new Category(item);
 
-      // const category = new MarketItemModel({
-      //   sku: Number(`10001000${i}`),
+        await category.save();
+      } catch (err) {
+        console.log('Market ctegories err -> ', err);
+      }
+    });
 
-      //   categories: [],
+    marketSubcategories.forEach(async item => {
+      try {
+        const subcategory = new Subcategory(item);
 
-      //   subcategories: [],
+        await subcategory.save();
+      } catch (err) {
+        console.log('Market subcategories err -> ', err);
+      }
+    });
 
-      //   nameUkr: `TestName_Item_Ukr_${i}`,
+    marketItems.forEach(async item => {
+      try {
+        const marketItem = new MarketItemModel({
+          ...item,
+          searchName: (item.nameUkr + ' ' + item.nameRu).toLowerCase().trim(),
+        });
 
-      //   nameRu: `TestName_Item_Ru_${i}`,
-
-      //   searchName: `TestName_Item_Ru_${
-      //     i % 2 !== 0 ? 'паляниця' : ''
-      //   } TestName_Item_Ukr_${i % 2 !== 0 ? 'жопа' : ''}`,
-
-      //   descriptionUkr: `TestName_Item_${i}_descr`,
-
-      //   descriptionRu: `TestName_Item_${i}_descr`,
-
-      //   manufacturer: `TestName_Item_${i}_manuf`,
-
-      //   measurementValue: 'kg',
-
-      //   stock: 100,
-
-      //   price: 100,
-
-      //   discount: 0,
-      // });
-
-      // const category = new Subcategory({
-      //   id: `10001000${i}`,
-      //   name: `TestName_Sub_${i}`,
-      //   parent: `10001000${i}`,
-      //   items: [`10001000${i}`, `10001000${i + 1}`, `10001000${i + 2}`],
-      // });
-
-      await category.save();
-    }
+        await marketItem.save();
+      } catch (err) {
+        console.log('Market items err -> ', err);
+      }
+    });
   }
 }

@@ -26,7 +26,13 @@ async function bootstrap() {
   // app.use(cors());
   app.use(helmet());
   app.use(bodyParser.json());
-  app.useGlobalPipes(new ValidationPipe());
+  app.useGlobalPipes(
+    new ValidationPipe({
+      whitelist: true,
+      forbidNonWhitelisted: true,
+      forbidUnknownValues: true,
+    }),
+  );
   app.setGlobalPrefix('api');
 
   // DB
