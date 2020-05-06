@@ -33,6 +33,11 @@ const userSchema = new dynamogoose.Schema({
     default: [],
   },
 
+  favorites: {
+    type: Object,
+    default: {},
+  },
+
   registrationDate: Date,
   lastVisit: Date,
   averageSessionDuration: {

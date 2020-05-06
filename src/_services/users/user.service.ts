@@ -36,6 +36,8 @@ export class UserService {
     try {
       const user: any = await UserModel.get({ phoneNumber });
 
+      if (!user) return null;
+
       user.orders = await Promise.all(
         user.orders.map(async order => {
           const orderData = await Order.get(order);

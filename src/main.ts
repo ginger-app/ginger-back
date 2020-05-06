@@ -16,14 +16,36 @@ import { DynamoDB } from './_services';
 // Middleware
 import * as helmet from 'helmet';
 import * as bodyParser from 'body-parser';
+import * as rateLimit from 'express-rate-limit';
+// import * as cookieParser from 'cookie-parser';
+// import * as csurf from 'csurf';
 // import * as cors from 'cors';
 
 async function bootstrap() {
   // App
-  const app = await NestFactory.create(AppModule, { cors: true });
+  const app = await NestFactory.create(AppModule);
 
   // Middleware
-  // app.use(cors());
+  // app.use(
+  //   cors({
+  //     origin: 'http://localhost:3000',
+  //     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+  //     preflightContinue: false,
+  //     optionsSuccessStatus: 204,
+  //   }),
+  // );
+  app.enableCors({
+    credentials: true,
+    origin: ['http://localhost:3000', 'http://localhost:3001'],
+  });
+  app.use(
+    rateLimit({
+      windowMs: 10 * 60 * 1000, // 10 minutes
+      max: 100, // limit each IP to 100 requests per windowMs
+    }),
+  );
+  // app.use(cookieParser());
+  // app.use(csurf());
   app.use(helmet());
   app.use(bodyParser.json());
   app.useGlobalPipes(

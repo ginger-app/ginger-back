@@ -53,19 +53,19 @@ export class MarketController {
     return { success: true, data };
   }
 
-  @Get('/item/:sku')
+  @Get('/product/:sku')
   async getMarketItemBySku(@Param() param: { sku: string }) {
     const data = await this.marketService.getMarketItemBySku(param.sku);
 
     if (!data)
-      throw new HttpException('Item does not exist', HttpStatus.NOT_FOUND);
+      throw new HttpException('Product does not exist', HttpStatus.NOT_FOUND);
 
     return { success: true, data };
   }
 
   // Searching options
   //
-  @Get('/item')
+  @Get('/product')
   async getMarketItemByName(@Query('name') name) {
     const data = await this.marketService.getMarketItemByName(name);
 

@@ -11,13 +11,19 @@ import {
 import { SigninDto, SignupDto, ConfirmationDto } from './_dto';
 
 // Services
-import { UserService, SmsService, RedisStorageService } from '../../_services';
+import {
+  UserService,
+  SmsService,
+  AuthService,
+  RedisStorageService,
+} from '../../_services';
 
 @Controller('auth')
 export class AuthController {
   constructor(
     private userService: UserService,
     private smsService: SmsService,
+    private authService: AuthService,
     private readonly redisService: RedisStorageService,
   ) {}
 
@@ -45,6 +51,22 @@ export class AuthController {
     } catch (err) {
       throw new HttpException(err.message, HttpStatus.BAD_REQUEST);
     }
+  }
+
+  @Post('/signin-confirmation')
+  async confirmation(@Body() body: ConfirmationDto): Promise<Object> {
+    const { phoneNumber, code } = body;
+
+    // getting temporary code from redis
+    const redisCode = await this.redisService.get(phoneNumber);
+
+    if (code !== redisCode)
+      throw new HttpException('Invalid code', HttpStatus.FORBIDDEN);
+
+    // JWT
+    const tokens = await this.authService.generateTokens(phoneNumber);
+
+    return { success: true, tokens };
   }
 
   @Post('/get-signup-code')
@@ -88,25 +110,12 @@ export class AuthController {
       // Also sending an email confirmation
       // this.emailService.sendConfirmationEmail(body.email)
 
-      return { success: true, userData: createdUser };
+      // JWT
+      const tokens = await this.authService.generateTokens(phoneNumber);
+
+      return { success: true, userData: createdUser, tokens };
     } catch (err) {
       throw new HttpException(err.message, HttpStatus.BAD_REQUEST);
     }
-  }
-
-  @Post('/signin-confirmation')
-  async confirmation(@Body() body: ConfirmationDto): Promise<Object> {
-    const { phoneNumber, code } = body;
-
-    // getting temporary code from redis
-    const redisCode = await this.redisService.get(phoneNumber);
-
-    if (code !== redisCode)
-      throw new HttpException('Invalid code', HttpStatus.FORBIDDEN);
-
-    //TODO if code check was passed - getting data from db (replace this with tokens later)
-    const userData = await this.userService.getUser(phoneNumber);
-
-    return { success: true, userData };
   }
 }
