@@ -99,13 +99,15 @@ export class MarketItem {
 export class Order {
   @ApiProperty()
   @IsDateString()
-  date: Date;
+  @IsOptional()
+  date: string;
 
   @ApiProperty()
   @IsNumber()
   sum: number;
 
   @ApiProperty()
+  @IsOptional()
   @IsString()
   @IsIn([
     'Awaiting payment',
@@ -123,6 +125,7 @@ export class Order {
 
   @ApiProperty()
   @IsObject()
+  @IsOptional()
   actualCart: Object;
 
   @ApiProperty()
@@ -131,6 +134,7 @@ export class Order {
 
   @ApiProperty()
   @IsString()
+  @IsOptional()
   client: string;
 }
 export class UpdateOrder {

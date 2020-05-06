@@ -72,7 +72,7 @@ export class UserService {
     }
   }
 
-  async createNewUserOrder(phoneNumber: string, orderId: string) {
+  async createNewUserOrder(phoneNumber: string, orderData: object) {
     const user: any = await UserModel.get({ phoneNumber });
     if (!user)
       throw new HttpException('User does not exist', HttpStatus.NOT_FOUND);
@@ -80,7 +80,7 @@ export class UserService {
     try {
       const updatedUser = new UserModel({
         ...user,
-        orders: [...user.orders, orderId],
+        orders: [...user.orders, orderData],
       });
 
       await updatedUser.save();

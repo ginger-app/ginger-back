@@ -42,8 +42,14 @@ export class ProfileController {
   }
 
   @Post('/favorites')
-  async addFavorite(@Body() body: { sku: string; phoneNumber: string }) {
-    const { sku, phoneNumber } = body;
+  async addFavorite(
+    @Headers() headers: { authorization: string },
+    @Body() body: { sku: string },
+  ) {
+    const { sku } = body;
+    const phoneNumber = await this.authService.TEMPORARY_checkAuth(
+      headers.authorization,
+    );
 
     try {
       const userData: any = await this.userService.getUser(phoneNumber);
@@ -61,7 +67,41 @@ export class ProfileController {
 
       return { success: true };
     } catch (err) {
-      throw new HttpException(err.message, HttpStatus.BAD_REQUEST);
+      throw new HttpException(
+        `${err.message} at /favorites`,
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+  }
+
+  @Post('/favorites/remove')
+  async removeFavorite(
+    @Headers() headers: { authorization: string },
+    @Body() body: { sku: string },
+  ) {
+    const { sku } = body;
+    const phoneNumber = await this.authService.TEMPORARY_checkAuth(
+      headers.authorization,
+    );
+
+    try {
+      const userData: any = await this.userService.getUser(phoneNumber);
+
+      if (!userData) throw new Error('No such user');
+
+      await this.userService.updateUserData(userData.phoneNumber, {
+        favorites: {
+          ...userData.favorites,
+          [sku]: false,
+        },
+      });
+
+      return { success: true };
+    } catch (err) {
+      throw new HttpException(
+        `${err.message} at /favorites`,
+        HttpStatus.BAD_REQUEST,
+      );
     }
   }
 }

@@ -9,17 +9,22 @@ import {
   Put,
   Body,
   Post,
+  Headers,
 } from '@nestjs/common';
 
 // Dto
 import { UpdateOrder, Order } from './_dto';
 
 // Services
-import { MarketService } from '../../_services';
+import { MarketService, AuthService, UserService } from '../../_services';
 
 @Controller('market')
 export class MarketController {
-  constructor(private marketService: MarketService) {}
+  constructor(
+    private marketService: MarketService,
+    private authService: AuthService,
+    private userService: UserService,
+  ) {}
 
   // Default GET API calls from app
   //
@@ -102,9 +107,23 @@ export class MarketController {
   }
 
   @Post('/orders')
-  async createNewOrder(@Body() body: Order) {
+  async createNewOrder(
+    @Headers() headers: { authorization: string },
+    @Body() body: Order,
+  ) {
     try {
-      const order = await this.marketService.createNewOrder(body);
+      const phoneNumber = await this.authService.TEMPORARY_checkAuth(
+        headers.authorization,
+      );
+
+      // Creating new order for Orders table
+      const order = await this.marketService.createNewOrder({
+        ...body,
+        date: new Date().toISOString(),
+        client: phoneNumber,
+        actualCart: {},
+        status: 'Completed',
+      });
 
       return { success: true, data: order };
     } catch (err) {

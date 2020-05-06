@@ -5,11 +5,11 @@ import { Module } from '@nestjs/common';
 import { MarketController } from './market.controller';
 
 // Providers
-import { MarketService, UserService } from '../../_services';
+import { MarketService, UserService, AuthService } from '../../_services';
 
 @Module({
   imports: [],
   controllers: [MarketController],
-  providers: [MarketService, UserService],
+  providers: [MarketService, UserService, AuthService],
 })
 export class MarketModule {}

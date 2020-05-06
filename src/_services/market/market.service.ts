@@ -333,7 +333,7 @@ export class MarketService {
       const order = new Order({ ...data, id });
       const result = await order.save();
 
-      await this.userService.createNewUserOrder(data.client, id);
+      await this.userService.createNewUserOrder(data.client, { ...data, id });
 
       return result;
     } catch (err) {
