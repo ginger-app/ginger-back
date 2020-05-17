@@ -34,7 +34,7 @@ async function bootstrap() {
     }),
   );
   app.use(helmet());
-  app.use(bodyParser.json({ limit: '50MB' }));
+  app.use(bodyParser.json());
   app.useGlobalPipes(
     new ValidationPipe({
       whitelist: true,
