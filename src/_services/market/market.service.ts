@@ -8,216 +8,104 @@ import { Category, Subcategory, MarketItemModel, Order } from '../db/models';
 import { UserService } from '../users';
 
 // Dto
-import { Order as OrderDto } from '../../_modules/market/_dto';
+import {
+  Order as OrderDto,
+  MarketItem as MarketItemDto,
+  MarketCategory as MarketCategoryDto,
+  MarketSubcategory as MarketSubcategoryDto,
+} from '../../_modules/market/_dto';
+
+// Instruments
+import * as randomWords from 'random-words';
 
 // test data
-const testData = {
-  marketCategories: [
-    {
-      sku: '10001',
-      name: 'Category_1',
-      subcategories: ['10001001', '10001002', '10001003'],
-    },
-    {
-      sku: '10002',
-      name: 'Category_2',
-      subcategories: ['10002001', '10002002', '10002003'],
-    },
-    {
-      sku: '10003',
-      name: 'Category_3',
-      subcategories: ['10003001', '10003002', '10003003'],
-    },
-  ],
+const testData = () => {
+  const marketCategories = Array(10)
+    .fill(1)
+    .map(item => ({
+      sku: Math.floor(Math.random() * 99999).toString(),
+      name: randomWords(),
+      subcategories: [],
+      items: [],
+    }));
 
-  marketSubcategories: [
-    {
-      sku: '10001001',
-      parent: '10001',
-      name: 'Subcategory_1_1',
-      tags: ['one', 'two'],
-      items: ['10001001001', '10001001002'],
-    },
-    {
-      sku: '10001002',
-      parent: '10001',
-      name: 'Subcategory_1_2',
-      tags: ['one', 'two'],
-      items: ['10001002003', '10001002004'],
-    },
-    {
-      sku: '10001003',
-      parent: '10001',
-      name: 'Subcategory_1_3',
-      tags: ['one', 'two'],
-      items: ['10002001001', '10002001004'],
-    },
-    {
-      sku: '10002001',
-      parent: '10002',
-      name: 'Subcategory_2_1',
-      tags: ['one', 'two'],
-      items: ['10002002001', '10002002004'],
-    },
-    {
-      sku: '10002002',
-      parent: '10002',
-      name: 'Subcategory_2_2',
-      tags: ['one', 'two'],
-      items: [],
-    },
-    {
-      sku: '10002003',
-      parent: '10002',
-      name: 'Subcategory_2_3',
-      tags: ['one', 'two'],
-      items: [],
-    },
-    {
-      sku: '10003001',
-      parent: '10003',
-      name: 'Subcategory_3_1',
-      tags: ['one', 'two'],
-      items: [],
-    },
-    {
-      sku: '10003002',
-      parent: '10003',
-      name: 'Subcategory_3_2',
-      tags: ['one', 'two'],
-      items: [],
-    },
-    {
-      sku: '10003003',
-      parent: '10003',
-      name: 'Subcategory_3_3',
-      tags: ['one', 'two'],
-      items: [],
-    },
-  ],
+  const marketSubcategories = marketCategories
+    .map(item => {
+      const randomizeData = () => ({
+        sku: `${item.sku}-${Math.floor(Math.random() * 99999)}`,
+        name: `${item.name}-${randomWords()}`,
+        parent: item.sku,
+        items: [],
+        tags: randomWords(5),
+      });
 
-  marketItems: [
-    {
-      sku: '10001001001',
-      categories: ['1001'],
-      subcategories: ['1001001'],
-      tags: ['one'],
-      nameUkr: 'Паляниця',
-      nameRu: 'Булочка',
-      descriptionUkr: 'DescrUkr',
-      descriptionRu: 'DescrRu',
-      manufacturer: 'Maenufacturer',
-      measurementValue: 'шт.',
-      stock: 100,
-      price: 100,
-      discount: 0,
-    },
-    {
-      sku: '10001001002',
-      categories: ['1001'],
-      subcategories: ['1001001'],
-      tags: ['two'],
-      nameUkr: 'Кватирка',
-      nameRu: 'Форточка',
-      descriptionUkr: 'DescrUkr',
-      descriptionRu: 'DescrRu',
-      manufacturer: 'Maenufacturer',
-      measurementValue: 'шт.',
-      stock: 100,
-      price: 100,
-      discount: 0,
-    },
-    {
-      sku: '10001002003',
-      categories: ['1001'],
-      subcategories: ['1001002'],
-      tags: ['one'],
-      nameUkr: 'Паляниця',
-      nameRu: 'Булочка',
-      descriptionUkr: 'DescrUkr',
-      descriptionRu: 'DescrRu',
-      manufacturer: 'Maenufacturer',
-      measurementValue: 'шт.',
-      stock: 100,
-      price: 100,
-      discount: 0,
-    },
-    {
-      sku: '10001002004',
-      categories: ['1001'],
-      subcategories: ['1001002'],
-      tags: ['two'],
-      nameUkr: 'Кватирка',
-      nameRu: 'Форточка',
-      descriptionUkr: 'DescrUkr',
-      descriptionRu: 'DescrRu',
-      manufacturer: 'Maenufacturer',
-      measurementValue: 'шт.',
-      stock: 100,
-      price: 100,
-      discount: 0,
-    },
-    {
-      sku: '10002001001',
-      categories: ['1002'],
-      subcategories: ['1002001'],
-      tags: ['one'],
-      nameUkr: 'Паляниця',
-      nameRu: 'Булочка',
-      descriptionUkr: 'DescrUkr',
-      descriptionRu: 'DescrRu',
-      manufacturer: 'Maenufacturer',
-      measurementValue: 'шт.',
-      stock: 100,
-      price: 100,
-      discount: 0,
-    },
-    {
-      sku: '10002001004',
-      categories: ['1002'],
-      subcategories: ['1002001'],
-      tags: ['two'],
-      nameUkr: 'Кватирка',
-      nameRu: 'Форточка',
-      descriptionUkr: 'DescrUkr',
-      descriptionRu: 'DescrRu',
-      manufacturer: 'Maenufacturer',
-      measurementValue: 'шт.',
-      stock: 100,
-      price: 100,
-      discount: 0,
-    },
-    {
-      sku: '10002002001',
-      categories: ['1002'],
-      subcategories: ['1002002'],
-      tags: ['one'],
-      nameUkr: 'Паляниця',
-      nameRu: 'Булочка',
-      descriptionUkr: 'DescrUkr',
-      descriptionRu: 'DescrRu',
-      manufacturer: 'Maenufacturer',
-      measurementValue: 'шт.',
-      stock: 100,
-      price: 100,
-      discount: 0,
-    },
-    {
-      sku: '10002002004',
-      categories: ['1002'],
-      subcategories: ['1002002'],
-      tags: ['two'],
-      nameUkr: 'Кватирка',
-      nameRu: 'Форточка',
-      descriptionUkr: 'DescrUkr',
-      descriptionRu: 'DescrRu',
-      manufacturer: 'Maenufacturer',
-      measurementValue: 'шт.',
-      stock: 100,
-      price: 100,
-      discount: 0,
-    },
-  ],
+      const subcatData = [
+        randomizeData(),
+        randomizeData(),
+        randomizeData(),
+        randomizeData(),
+        randomizeData(),
+        randomizeData(),
+        randomizeData(),
+        randomizeData(),
+        randomizeData(),
+        randomizeData(),
+        randomizeData(),
+      ];
+
+      // pushing subcategory to the specific category
+      marketCategories
+        .filter(marketCategory => marketCategory.sku === item.sku)[0]
+        .subcategories.push(...subcatData.map(subcatItem => subcatItem.sku));
+
+      return subcatData;
+    })
+    .flat();
+
+  const marketItems = marketSubcategories
+    .map(item => {
+      const nameUkr = randomWords();
+      const nameRu = randomWords();
+
+      const randomizeItemData = () => ({
+        nameUkr,
+        nameRu,
+        sku: `${item.sku}-${Math.floor(Math.random() * 9999)}`,
+        name: randomWords(),
+        categories: [item.parent],
+        subcategories: [item.sku],
+        searchName: (nameUkr + ' ' + nameRu).toLowerCase().trim(),
+        descriptionUkr:
+          'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. ',
+        descriptionRu:
+          'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. ',
+        manufacturer: 'Lorem',
+        unit: ['шт.', 'кг', 'л', 'уп'][Math.floor(Math.random() * 4)],
+        stock: Math.round(Math.random() * 100),
+        price: Number((Math.random() * 500).toFixed(2)),
+        discount: Number(Math.floor(Math.random() * 10)),
+        tags: [
+          item.tags[Math.floor(Math.random() * 5)],
+          item.tags[Math.floor(Math.random() * 5)],
+        ],
+      });
+
+      return [
+        randomizeItemData(),
+        randomizeItemData(),
+        randomizeItemData(),
+        randomizeItemData(),
+        randomizeItemData(),
+        randomizeItemData(),
+        randomizeItemData(),
+        randomizeItemData(),
+        randomizeItemData(),
+        randomizeItemData(),
+      ];
+    })
+    .flat();
+
+  return { marketCategories, marketSubcategories, marketItems };
 };
 
 @Injectable()
@@ -243,6 +131,25 @@ export class MarketService {
     }
   }
 
+  async addNewItemToCategory(sku: string, newItem: object) {
+    try {
+      const category: any = await Category.queryOne({ sku }).exec();
+      if (!category) return null;
+
+      const updatedCategory = new Category({
+        ...category,
+        items: [...category.items, newItem],
+      });
+
+      await updatedCategory.save();
+    } catch (err) {
+      throw new HttpException(
+        `addNewItemToCategory err -> ${err.message}`,
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+  }
+
   // Subcategories
   async getSubcategoryBySku(sku: string) {
     try {
@@ -262,6 +169,25 @@ export class MarketService {
     }
   }
 
+  async addNewItemToSubCategory(sku: string, newItem: object) {
+    try {
+      const subcategory: any = await Subcategory.queryOne({ sku }).exec();
+      if (!subcategory) return null;
+
+      const updatedSubcategory = new Subcategory({
+        ...subcategory,
+        items: [...subcategory.items, newItem],
+      });
+
+      await updatedSubcategory.save();
+    } catch (err) {
+      throw new HttpException(
+        `addNewItemToSubCategory err -> ${err.message}`,
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+  }
+
   // Items
   async getMarketItemBySku(sku: string) {
     try {
@@ -273,7 +199,6 @@ export class MarketService {
   }
 
   async getMarketItemByName(name: string) {
-    console.log(name);
     try {
       const data = await MarketItemModel.scan({
         searchName: { contains: name.toLowerCase().trim() },
@@ -281,6 +206,29 @@ export class MarketService {
       return data;
     } catch (err) {
       throw new HttpException(err.message, HttpStatus.BAD_REQUEST);
+    }
+  }
+
+  async createNewMarketItem(data: MarketItemDto) {
+    const { nameRu, nameUkr, categories, subcategories } = data;
+    try {
+      const marketItem = new MarketItemModel({
+        ...data,
+        searchName: (nameUkr + ' ' + nameRu).toLowerCase().trim(),
+      });
+
+      // creating new item at MarketItems table
+      await marketItem.save();
+
+      categories.forEach(async item => {
+        await this.addNewItemToCategory(item, data);
+      });
+
+      subcategories.forEach(async item => {
+        await this.addNewItemToSubCategory(item, data);
+      });
+    } catch (err) {
+      console.log('Market items err -> ', err);
     }
   }
 
@@ -343,39 +291,38 @@ export class MarketService {
 
   // Test shit
   async createTestModels() {
-    const { marketCategories, marketSubcategories, marketItems } = testData;
+    const { marketCategories, marketSubcategories, marketItems } = testData();
 
-    marketCategories.forEach(async item => {
-      try {
-        const category = new Category(item);
+    // console.log({ marketCategories, marketSubcategories, marketItems });
 
-        await category.save();
-      } catch (err) {
-        console.log('Market ctegories err -> ', err);
-      }
-    });
+    await Promise.all(
+      marketCategories.map(async item => {
+        try {
+          const category = new Category(item);
 
-    marketSubcategories.forEach(async item => {
-      try {
-        const subcategory = new Subcategory(item);
+          await category.save();
+        } catch (err) {
+          console.log('Market ctegories err -> ', err);
+        }
+      }),
+    );
 
-        await subcategory.save();
-      } catch (err) {
-        console.log('Market subcategories err -> ', err);
-      }
-    });
+    await Promise.all(
+      marketSubcategories.map(async item => {
+        try {
+          const subcategory = new Subcategory(item);
 
-    marketItems.forEach(async item => {
-      try {
-        const marketItem = new MarketItemModel({
-          ...item,
-          searchName: (item.nameUkr + ' ' + item.nameRu).toLowerCase().trim(),
-        });
+          await subcategory.save();
+        } catch (err) {
+          console.log('Market subcategories err -> ', err);
+        }
+      }),
+    );
 
-        await marketItem.save();
-      } catch (err) {
-        console.log('Market items err -> ', err);
-      }
-    });
+    await Promise.all(
+      marketItems.map(async item => {
+        await this.createNewMarketItem(item);
+      }),
+    );
   }
 }

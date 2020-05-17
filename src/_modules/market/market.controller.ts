@@ -90,7 +90,16 @@ export class MarketController {
   }
 
   @Get('/orders/:id')
-  async getOrderById(@Param('id') id: string) {
+  async getOrderById(
+    @Param('id') id: string,
+    @Headers() headers: { authorization: string },
+  ) {
+    try {
+      await this.authService.TEMPORARY_checkAuth(headers.authorization);
+    } catch (err) {
+      throw new HttpException(err.message, HttpStatus.BAD_REQUEST);
+    }
+
     const data = await this.marketService.getOrderById(id);
 
     if (!data)

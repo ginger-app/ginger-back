@@ -89,11 +89,11 @@ export class ProfileController {
 
       if (!userData) throw new Error('No such user');
 
+      const newFavorites = { ...userData.favorites };
+      delete newFavorites[sku];
+
       await this.userService.updateUserData(userData.phoneNumber, {
-        favorites: {
-          ...userData.favorites,
-          [sku]: false,
-        },
+        favorites: newFavorites,
       });
 
       return { success: true };

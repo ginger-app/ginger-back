@@ -44,16 +44,16 @@ export class MarketSubcategory {
 
 export class MarketItem {
   @ApiProperty()
-  @IsNumber()
-  sku: number;
+  @IsString()
+  sku: string;
 
   @ApiProperty()
   @IsArray()
-  categories: Array<object>;
+  categories: Array<string>;
 
   @ApiProperty()
   @IsArray()
-  subcategories: Array<object>;
+  subcategories: Array<string>;
 
   @ApiProperty()
   @IsString()
@@ -77,7 +77,7 @@ export class MarketItem {
 
   @ApiProperty()
   @IsString()
-  measurementValue: string;
+  unit: string;
 
   @ApiProperty()
   @IsNumber()
@@ -136,6 +136,19 @@ export class Order {
   @IsString()
   @IsOptional()
   client: string;
+
+  @ApiProperty()
+  @IsString()
+  @IsOptional()
+  comment: string;
+
+  @ApiProperty()
+  @IsString()
+  deliveryTime: string;
+
+  @ApiProperty()
+  @IsString()
+  addressDetails: string;
 }
 export class UpdateOrder {
   @ApiProperty()

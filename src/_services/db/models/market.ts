@@ -43,6 +43,10 @@ const categorySchema = new dynamogoose.Schema({
   subcategories: {
     type: Array,
   },
+
+  items: {
+    type: Array,
+  },
 });
 
 const marketItemSchema = new dynamogoose.Schema({
@@ -91,7 +95,7 @@ const marketItemSchema = new dynamogoose.Schema({
     required: true,
   },
 
-  measurementValue: {
+  unit: {
     type: String,
     required: true,
   },
@@ -131,7 +135,7 @@ const orderSchema = new dynamogoose.Schema({
     // enum
     validate: value =>
       [
-        'Awaiting payment',
+        'Pending',
         'Awaiting collection',
         'Awaiting shipment',
         'Shipping',
@@ -140,7 +144,7 @@ const orderSchema = new dynamogoose.Schema({
     required: true,
   },
   userCart: {
-    type: Array,
+    type: Object,
     // map: {
     //   item: Number,
     //   amount: Number,
@@ -148,7 +152,7 @@ const orderSchema = new dynamogoose.Schema({
     required: true,
   },
   actualCart: {
-    type: Array,
+    type: Object,
     // map: {
     //   item: Number,
     //   amount: Number,
@@ -156,6 +160,16 @@ const orderSchema = new dynamogoose.Schema({
     default: {},
   },
   address: {
+    type: String,
+    required: true,
+  },
+  comment: {
+    type: String,
+  },
+  deliveryComment: {
+    type: String,
+  },
+  deliveryTime: {
     type: String,
     required: true,
   },

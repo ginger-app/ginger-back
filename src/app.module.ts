@@ -2,7 +2,12 @@
 import { Module } from '@nestjs/common';
 
 // Modules
-import { AuthModule, MarketModule, ProfileModule } from './_modules';
+import {
+  AuthModule,
+  MarketModule,
+  ProfileModule,
+  AppInternalModule,
+} from './_modules';
 import { RedisModule } from 'nestjs-redis';
 
 // Services
@@ -13,6 +18,7 @@ import { DynamoDB } from './_services';
     AuthModule,
     MarketModule,
     ProfileModule,
+    AppInternalModule,
     RedisModule.register({
       host: '127.0.0.1',
       port: 6379,

@@ -80,7 +80,7 @@ export class UserService {
     try {
       const updatedUser = new UserModel({
         ...user,
-        orders: [...user.orders, orderData],
+        orders: [orderData, ...user.orders],
       });
 
       await updatedUser.save();
