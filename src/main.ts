@@ -25,7 +25,12 @@ async function bootstrap() {
   // Middleware
   app.enableCors({
     credentials: true,
-    origin: ['http://localhost:3000', 'http://localhost:3001'],
+    origin: [
+      'http://localhost:3000',
+      'http://localhost:3001',
+      'http://192.168.1.110:3000',
+      process.env.CORS_ORIGIN,
+    ],
   });
   app.use(
     rateLimit({
