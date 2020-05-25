@@ -38,7 +38,13 @@ export class ProfileController {
     if (!userData)
       throw new HttpException('No such user', HttpStatus.NOT_FOUND);
 
-    return { success: true, userData };
+    return {
+      success: true,
+      userData: {
+        ...userData,
+        dailyBonus: 5, // someday this bonus will be unique
+      },
+    };
   }
 
   @Post('/favorites')
