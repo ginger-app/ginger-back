@@ -23,6 +23,16 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
   // Middleware
+  app.use(function(req, res, next) {
+    console.log(`[${new Date().getTime()}][INCOMING_REQ]`);
+    console.log(`[IP_ADDRESS] ${req.connection.remoteAddress}`);
+    console.log(`[REQ_PROTOCOL] ${req.protocol}`);
+    console.log(`[REQ_HOSTNAME] ${req.hostname}`);
+    console.log(`[REQ_PATH] ${req.path}`);
+    console.log(`[REQ_METHOD] ${req.method}`);
+
+    next();
+  });
   app.enableCors({
     credentials: true,
     origin: [
@@ -32,14 +42,34 @@ async function bootstrap() {
       process.env.CORS_ORIGIN,
     ],
   });
+  app.use(function(req, res, next) {
+    console.log(`[PASSED CORS]`);
+
+    next();
+  });
   app.use(
     rateLimit({
       windowMs: 10 * 60 * 1000, // 10 minutes
       max: 100, // limit each IP to 100 requests per windowMs
     }),
   );
+  app.use(function(req, res, next) {
+    console.log(`[PASSED RATE LIMITER]`);
+
+    next();
+  });
   app.use(helmet());
+  app.use(function(req, res, next) {
+    console.log(`[PASSED HELMET]`);
+
+    next();
+  });
   app.use(bodyParser.json());
+  app.use(function(req, res, next) {
+    console.log(`[PASSED BODY PARSER]`);
+
+    next();
+  });
   app.useGlobalPipes(
     new ValidationPipe({
       whitelist: true,
@@ -47,6 +77,11 @@ async function bootstrap() {
       forbidUnknownValues: true,
     }),
   );
+  app.use(function(req, res, next) {
+    console.log(`[PASSED VALIDATION PIPE]`);
+
+    next();
+  });
   app.setGlobalPrefix('api');
 
   // DB

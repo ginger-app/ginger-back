@@ -20,8 +20,8 @@ import { DynamoDB } from './_services';
     ProfileModule,
     AppInternalModule,
     RedisModule.register({
-      host: 'redis',
-      // host: 'localhost',
+      // host: 'redis',
+      host: 'localhost',
       port: 6379,
     }),
   ],
