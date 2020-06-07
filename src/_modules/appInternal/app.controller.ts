@@ -22,10 +22,11 @@ export class AppController {
         await this.redisService.set(
           `log_name`,
           `${existingLogs || ''}\n${body.logs}`,
+          3600 * 24,
         );
         return res.send({ success: true });
       } else {
-        await this.redisService.set(`logs_latest`, body.logs);
+        await this.redisService.set(`logs_latest`, body.logs, 3600 * 24);
         return res.send({ success: true });
       }
     } catch (err) {
