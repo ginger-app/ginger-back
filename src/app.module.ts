@@ -19,11 +19,11 @@ import { DynamoDB } from './_services';
     MarketModule,
     ProfileModule,
     AppInternalModule,
-    RedisModule.register({
-      // host: 'redis',
-      host: 'localhost',
-      port: 6379,
-    }),
+    // RedisModule.register({
+    //   // host: 'redis',
+    //   host: 'localhost',
+    //   port: 6379,
+    // }),
   ],
   controllers: [],
   providers: [DynamoDB],
