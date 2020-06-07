@@ -32,6 +32,8 @@ export class MarketController {
   async getMarketCategories() {
     const data = await this.marketService.getAllGategories();
 
+    console.log(`[CATEGORIES GET] ${data}`);
+
     return { success: true, data };
   }
 
