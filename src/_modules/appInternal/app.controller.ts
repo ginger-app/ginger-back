@@ -13,17 +13,19 @@ export class AppController {
   }
 
   @Post('/logs')
-  sendLogs(@Body() body, @Param('name') name) {
+  sendLogs(@Body() body, @Param('name') name, @Res() res) {
     let filepath = '';
     if (name) {
       filepath = join('logs', `${name}.txt`);
-      fs.appendFileSync(filepath, body.logs);
+      fs.appendFile(filepath, body.logs, err =>
+        err ? err : res.send({ success: true, filepath }),
+      );
     } else {
       filepath = join('logs', `latest.txt`);
-      fs.writeFileSync(filepath, body.logs);
+      fs.writeFile(filepath, body.logs, err =>
+        err ? err : res.send({ success: true, filepath }),
+      );
     }
-
-    return { success: true, filepath };
   }
 
   @Get('/logs')
