@@ -50,8 +50,8 @@ async function bootstrap() {
   });
   app.use(
     rateLimit({
-      windowMs: 10 * 60 * 1000, // 10 minutes
-      max: 100, // limit each IP to 100 requests per windowMs
+      windowMs: 60 * 1000, // 1 min
+      max: 60, // limit each IP to 60 requests per windowMs
     }),
   );
   app.use(function(req, res, next) {
