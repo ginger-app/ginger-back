@@ -24,12 +24,12 @@ async function bootstrap() {
 
   // Middleware
   app.use(function(req, res, next) {
-    console.log(`[${new Date().getTime()}][INCOMING_REQ]`);
-    console.log(`[IP_ADDRESS] ${req.connection.remoteAddress}`);
-    console.log(`[REQ_PROTOCOL] ${req.protocol}`);
-    console.log(`[REQ_HOSTNAME] ${req.hostname}`);
-    console.log(`[REQ_PATH] ${req.path}`);
-    console.log(`[REQ_METHOD] ${req.method}`);
+    // console.log(`[${new Date().getTime()}][INCOMING_REQ]`);
+    // console.log(`[IP_ADDRESS] ${req.connection.remoteAddress}`);
+    // console.log(`[REQ_PROTOCOL] ${req.protocol}`);
+    // console.log(`[REQ_HOSTNAME] ${req.hostname}`);
+    // console.log(`[REQ_PATH] ${req.path}`);
+    // console.log(`[REQ_METHOD] ${req.method}`);
 
     next();
   });
@@ -44,7 +44,7 @@ async function bootstrap() {
     ],
   });
   app.use(function(req, res, next) {
-    console.log(`[PASSED CORS]`);
+    // console.log(`[PASSED CORS]`);
 
     next();
   });
@@ -55,19 +55,19 @@ async function bootstrap() {
     }),
   );
   app.use(function(req, res, next) {
-    console.log(`[PASSED RATE LIMITER]`);
+    // console.log(`[PASSED RATE LIMITER]`);
 
     next();
   });
   app.use(helmet());
   app.use(function(req, res, next) {
-    console.log(`[PASSED HELMET]`);
+    // console.log(`[PASSED HELMET]`);
 
     next();
   });
   app.use(bodyParser.json());
   app.use(function(req, res, next) {
-    console.log(`[PASSED BODY PARSER]`);
+    // console.log(`[PASSED BODY PARSER]`);
 
     next();
   });
@@ -79,7 +79,7 @@ async function bootstrap() {
     }),
   );
   app.use(function(req, res, next) {
-    console.log(`[PASSED VALIDATION PIPE]`);
+    // console.log(`[PASSED VALIDATION PIPE]`);
 
     next();
   });

@@ -44,6 +44,8 @@ export class AuthController {
         code,
       } = await this.smsService.sendConfirmationCode(phoneNumber);
 
+      console.log(`Signin code for ${number} -> ${code}`);
+
       // Setting redis value to wait for user to input the code
       await this.redisService.set(phoneNumber, code, 600);
 
@@ -84,6 +86,8 @@ export class AuthController {
         number,
         code,
       } = await this.smsService.sendConfirmationCode(phoneNumber);
+
+      console.log(`Signup code for ${number} -> ${code}`);
 
       // Setting redis value to wait for user to input the code
       await this.redisService.set(phoneNumber, code, 600);
