@@ -39,6 +39,7 @@ async function bootstrap() {
       'http://localhost:3000',
       'http://localhost:3001',
       'http://192.168.1.110:3000',
+      'http://192.168.43.72:3000',
       process.env.CORS_ORIGIN,
     ],
   });
