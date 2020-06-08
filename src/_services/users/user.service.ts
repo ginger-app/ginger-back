@@ -10,7 +10,7 @@ export class UserService {
     phoneNumber: string;
     email: string;
     firstName: string;
-    lastName: string;
+    lastName?: string;
     isAdmin?: boolean;
     isWorker?: boolean;
   }) {
