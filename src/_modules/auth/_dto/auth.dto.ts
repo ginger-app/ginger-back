@@ -31,11 +31,7 @@ export class SignupDto {
 
   @ApiProperty()
   @IsString()
-  firstName: string;
-
-  @ApiProperty()
-  @IsString()
-  lastName: string;
+  name: string;
 
   @ApiProperty()
   @IsBoolean()

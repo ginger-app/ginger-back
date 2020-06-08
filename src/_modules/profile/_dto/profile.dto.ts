@@ -21,11 +21,7 @@ export class ProfileDto {
 
   @ApiProperty()
   @IsString()
-  firstName: string;
-
-  @ApiProperty()
-  @IsString()
-  lastName: string;
+  name: string;
 
   @ApiProperty()
   @IsString()

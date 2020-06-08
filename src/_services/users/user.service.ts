@@ -9,8 +9,7 @@ export class UserService {
   async createUser(data: {
     phoneNumber: string;
     email: string;
-    firstName: string;
-    lastName?: string;
+    name: string;
     isAdmin?: boolean;
     isWorker?: boolean;
   }) {

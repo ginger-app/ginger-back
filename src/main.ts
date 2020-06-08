@@ -48,12 +48,12 @@ async function bootstrap() {
 
     next();
   });
-  app.use(
-    rateLimit({
-      windowMs: 60 * 1000, // 1 min
-      max: 60, // limit each IP to 60 requests per windowMs
-    }),
-  );
+  // app.use(
+  //   rateLimit({
+  //     windowMs: 60 * 1000, // 1 min
+  //     max: 60, // limit each IP to 60 requests per windowMs
+  //   }),
+  // );
   app.use(function(req, res, next) {
     // console.log(`[PASSED RATE LIMITER]`);
 
