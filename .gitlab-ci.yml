@@ -6,7 +6,7 @@ services:
   - docker:dind
 
 build:
-  image: docker:latest
+  image: docker:19.03.8
   environment:
     name: backend/$CI_COMMIT_REF_NAME
   stage: build
