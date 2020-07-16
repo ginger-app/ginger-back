@@ -1,8 +1,12 @@
 stages:
   - build
   - deploy
+
+services:
+  - docker:dind
+
 build:
-  image: docker:19.03.8
+  image: docker:latest
   environment:
     name: backend/$CI_COMMIT_REF_NAME
   stage: build
