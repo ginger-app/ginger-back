@@ -8,6 +8,11 @@ import { RedisStorageService } from '../../_services';
 export class AppController {
   constructor(private readonly redisService: RedisStorageService) {}
 
+  @Get('/health')
+  getHealthStatus() {
+    return true;
+  }
+
   @Get('/g-maps')
   getGoogleMapsApiKey() {
     return { success: true, data: process.env.GOOGLE_MAPS_API_KEY };
