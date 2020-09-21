@@ -35,14 +35,15 @@ async function bootstrap() {
   });
   app.enableCors({
     credentials: true,
-    origin: [
-      'http://localhost:3000',
-      'http://localhost:3001',
-      'http://192.168.1.110:3000',
-      'http://192.168.43.72:3000',
-      'https://development.d2aysidoudhgn2.amplifyapp.com',
-      process.env.CORS_ORIGIN,
-    ],
+    origin: '*',
+    // origin: [
+    //   'http://localhost:3000',
+    //   'http://localhost:3001',
+    //   'http://192.168.1.110:3000',
+    //   'http://192.168.43.72:3000',
+    //   'https://development.d2aysidoudhgn2.amplifyapp.com',
+    //   process.env.CORS_ORIGIN,
+    // ],
   });
   app.use(function(req, res, next) {
     // console.log(`[PASSED CORS]`);
