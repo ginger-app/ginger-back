@@ -4,7 +4,12 @@ dotenv.config();
 
 // Core
 import { NestFactory } from '@nestjs/core';
-import { ValidationPipe } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
+import {
+  ValidationPipe,
+  BadRequestException,
+  HttpStatus,
+} from '@nestjs/common';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 
 // Modules
@@ -16,89 +21,50 @@ import { DynamoDB } from './_services';
 // Middleware
 import * as helmet from 'helmet';
 import * as bodyParser from 'body-parser';
-import * as rateLimit from 'express-rate-limit';
+import * as cookieParser from 'cookie-parser';
+// import * as rateLimit from 'express-rate-limit';
 
 async function bootstrap() {
   // App
   const app = await NestFactory.create(AppModule);
+  const configService = app.get(ConfigService);
 
   // Middleware
-  app.use(function(req, res, next) {
-    // console.log(`[${new Date().getTime()}][INCOMING_REQ]`);
-    // console.log(`[IP_ADDRESS] ${req.connection.remoteAddress}`);
-    // console.log(`[REQ_PROTOCOL] ${req.protocol}`);
-    // console.log(`[REQ_HOSTNAME] ${req.hostname}`);
-    // console.log(`[REQ_PATH] ${req.path}`);
-    // console.log(`[REQ_METHOD] ${req.method}`);
-
-    next();
-  });
-  app.enableCors({
-    credentials: true,
-    origin: '*',
-    // origin: [
-    //   'http://localhost:3000',
-    //   'http://localhost:3001',
-    //   'http://192.168.1.110:3000',
-    //   'http://192.168.43.72:3000',
-    //   'https://development.d2aysidoudhgn2.amplifyapp.com',
-    //   process.env.CORS_ORIGIN,
-    // ],
-  });
-  app.use(function(req, res, next) {
-    // console.log(`[PASSED CORS]`);
-
-    next();
-  });
-  // app.use(
-  //   rateLimit({
-  //     windowMs: 60 * 1000, // 1 min
-  //     max: 60, // limit each IP to 60 requests per windowMs
-  //   }),
-  // );
-  app.use(function(req, res, next) {
-    // console.log(`[PASSED RATE LIMITER]`);
-
-    next();
-  });
+  app.enableCors(configService.get('app.cors'));
   app.use(helmet());
-  app.use(function(req, res, next) {
-    // console.log(`[PASSED HELMET]`);
-
-    next();
-  });
   app.use(bodyParser.json());
-  app.use(function(req, res, next) {
-    // console.log(`[PASSED BODY PARSER]`);
-
-    next();
-  });
+  app.use(cookieParser(configService.get<string>('app.cookieSecret')));
   app.useGlobalPipes(
     new ValidationPipe({
       whitelist: true,
       forbidNonWhitelisted: true,
       forbidUnknownValues: true,
+      validationError: { target: false, value: false },
+      exceptionFactory: details =>
+        new BadRequestException({
+          statusCode: HttpStatus.BAD_REQUEST,
+          error: 'Bad Request',
+          details,
+        }),
     }),
   );
-  app.use(function(req, res, next) {
-    // console.log(`[PASSED VALIDATION PIPE]`);
-
-    next();
-  });
   app.setGlobalPrefix('api');
 
   // DB
   await DynamoDB.init();
 
   // Swagger documentation
-  const options = new DocumentBuilder()
-    .setTitle('Ginger doc')
-    .setDescription('Ginger app API description')
-    .setVersion('0.0.1')
-    .build();
+  if (configService.get<string>('app.env') !== 'production') {
+    const options = new DocumentBuilder()
+      .setTitle('Ginger doc')
+      .setDescription('Ginger app API description')
+      .setVersion('0.0.2')
+      // .addBearerAuth()
+      .build();
 
-  const document = SwaggerModule.createDocument(app, options);
-  SwaggerModule.setup('docs', app, document);
+    const document = SwaggerModule.createDocument(app, options);
+    SwaggerModule.setup('docs', app, document);
+  }
 
   // Launch
   await app.listen(process.env.PORT || 6001);

@@ -7,7 +7,7 @@ import {
   MarketModule,
   ProfileModule,
   AppInternalModule,
-} from './_modules';
+} from './modules';
 import { RedisModule } from 'nestjs-redis';
 
 // Services

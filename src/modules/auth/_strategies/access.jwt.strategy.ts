@@ -1,0 +1,16 @@
+import { Injectable } from '@nestjs/common';
+import { PassportStrategy } from '@nestjs/passport';
+import { Strategy } from 'passport-http-bearer';
+import { JwtTokenType } from '../../../interfaces';
+import { AuthService } from '../../../_services';
+
+@Injectable()
+export class AccessStrategy extends PassportStrategy(Strategy, 'access') {
+  constructor(private readonly authService: AuthService) {
+    super();
+  }
+
+  validate(token: string) {
+    return this.authService.validateToken(token, JwtTokenType.ACCESS);
+  }
+}
