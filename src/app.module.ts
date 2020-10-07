@@ -1,31 +1,23 @@
 // Core
 import { Module } from '@nestjs/common';
+import { ConfigModule } from '@nestjs/config';
 
-// Modules
-import {
-  AuthModule,
-  MarketModule,
-  ProfileModule,
-  AppInternalModule,
-} from './modules';
+// Services & Modules
 import { RedisModule } from 'nestjs-redis';
-
-// Services
-import { DynamoDB } from './_services';
+import { DynamoDB } from './modules/dynamo';
+import { AuthModule } from './modules/auth';
 
 @Module({
   imports: [
-    AuthModule,
-    MarketModule,
-    ProfileModule,
-    AppInternalModule,
+    ConfigModule.forRoot(),
     RedisModule.register({
       host: 'redis',
-      // host: 'localhost',
       port: 6379,
     }),
+    DynamoDB,
+    AuthModule,
   ],
   controllers: [],
-  providers: [DynamoDB],
+  providers: [],
 })
 export class AppModule {}

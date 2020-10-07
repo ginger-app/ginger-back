@@ -1,4 +1,3 @@
-import { Client } from '../profile';
 import { MarketItem } from '../market';
 import { Order } from '../order';
 
@@ -8,7 +7,7 @@ interface LocationMarketItem extends MarketItem {
 
 export interface Location {
   id: string;
-  parentId: Client['id'];
+  parentId: string;
   locationName: string;
   address: string;
   schedule: {

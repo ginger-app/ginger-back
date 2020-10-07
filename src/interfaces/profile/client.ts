@@ -1,5 +1,6 @@
 import { MarketItem } from '../market';
 import { Order } from '../order';
+import { Location } from '../location';
 
 export interface ListItem extends MarketItem {
   locations: Array<any>;
@@ -11,7 +12,7 @@ export interface Client {
   email: string;
   phoneNumber: string;
   companyName: string;
-  locations: Array<any>; // Location
+  locations: Location[];
   orders: {
     suppliers: Array<any>;
     categories: Array<any>;

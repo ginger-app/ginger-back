@@ -27,6 +27,7 @@
     "@nestjs/passport": "^7.1.0",
     "@nestjs/platform-express": "^7.0.0",
     "@nestjs/swagger": "^4.5.1",
+    "argon2": "^0.27.0",
     "aws-sdk": "^2.766.0",
     "body-parser": "^1.19.0",
     "class-transformer": "^0.2.3",

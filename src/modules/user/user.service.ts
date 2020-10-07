@@ -4,9 +4,6 @@ import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
 // Models
 // import { UserModel, Order } from '../db/models';
 
-// Dto
-import { ProfileDto } from '../../modules/profile/_dto';
-
 @Injectable()
 export class UserService {
   async createUser(data: {

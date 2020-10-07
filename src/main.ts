@@ -16,13 +16,12 @@ import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { AppModule } from './app.module';
 
 // Providers
-import { DynamoDB } from './_services';
+import { DynamoDB } from './modules/dynamo';
 
 // Middleware
 import * as helmet from 'helmet';
 import * as bodyParser from 'body-parser';
 import * as cookieParser from 'cookie-parser';
-// import * as rateLimit from 'express-rate-limit';
 
 async function bootstrap() {
   // App
