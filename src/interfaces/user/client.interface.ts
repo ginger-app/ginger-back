@@ -7,7 +7,6 @@ export interface ListItem extends MarketItem {
 }
 
 export interface Client {
-  id: string;
   name: string;
   email: string;
   phoneNumber: string;
@@ -23,5 +22,7 @@ export interface Client {
   paymentMethods: Array<any>;
   analyticsData: Object;
   cookiesAgreed: Boolean;
+  registrationDate: Date;
+  lastVisit: Date;
   readonly role: string;
 }

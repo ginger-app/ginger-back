@@ -2,12 +2,9 @@ import { ApiProperty } from '@nestjs/swagger';
 
 import { Location } from '../../../interfaces/location';
 import { Order } from '../../../interfaces/order';
-import { ListItem, Client } from '../../../interfaces/profile';
+import { ListItem, Client } from '../../../interfaces/user';
 
 export class ClientDto {
-  @ApiProperty({ title: 'User id', type: String })
-  id: string;
-
   @ApiProperty({ title: `User's name`, type: String })
   name: string;
 
@@ -42,14 +39,10 @@ export class ClientDto {
   @ApiProperty({ title: `Analytics according to user's activity` })
   analyticsData: Object;
 
-  @ApiProperty()
-  cookiesAgreed: Boolean;
-
   @ApiProperty({ title: `User's role` })
   role: string;
 
   constructor(user: Client) {
-    this.id = user.id;
     this.name = user.name;
     this.email = user.email;
     this.phoneNumber = user.phoneNumber;
@@ -60,7 +53,6 @@ export class ClientDto {
     this.lists = user.lists;
     this.paymentMethods = user.paymentMethods;
     this.analyticsData = user.analyticsData;
-    this.cookiesAgreed = user.cookiesAgreed;
     this.role = user.role;
   }
 }

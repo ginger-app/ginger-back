@@ -4,4 +4,4 @@ export * from './jwt';
 export * from './location';
 export * from './market';
 export * from './order';
-export * from './profile';
+export * from './user';

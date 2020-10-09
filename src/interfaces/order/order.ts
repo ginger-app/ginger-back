@@ -8,7 +8,6 @@ enum Status {
 }
 
 export interface Order {
-  id: string;
   supplier: string; // supplier id
   client: string; // client id
   createdAt: Date;

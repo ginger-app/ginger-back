@@ -15,9 +15,6 @@ import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 // Modules
 import { AppModule } from './app.module';
 
-// Providers
-import { DynamoDB } from './modules/dynamo';
-
 // Middleware
 import * as helmet from 'helmet';
 import * as bodyParser from 'body-parser';
@@ -48,9 +45,6 @@ async function bootstrap() {
     }),
   );
   app.setGlobalPrefix('api');
-
-  // DB
-  await DynamoDB.init();
 
   // Swagger documentation
   if (configService.get<string>('app.env') !== 'production') {

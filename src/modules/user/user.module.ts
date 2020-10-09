@@ -2,14 +2,20 @@
 import { Module } from '@nestjs/common';
 
 // Modules
+import { MongooseModule } from '@nestjs/mongoose';
 
 // Controllers
 
 // Providers and Services
 import { UserService } from '../user';
 
+// Instruments
+import { ClientSchema } from '../db/models';
+
 @Module({
-  imports: [],
+  imports: [
+    MongooseModule.forFeature([{ name: 'Client', schema: ClientSchema }]),
+  ],
   controllers: [],
   providers: [UserService],
   exports: [UserService],

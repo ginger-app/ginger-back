@@ -8,7 +8,6 @@ import { ConfigService } from '@nestjs/config';
 import { JwtTokenType } from '../../interfaces';
 
 // Dto & Interfaces
-// import { SigninUserData, ConfirmationDto } from './_dto';
 import { ClientSignup } from '../../interfaces';
 
 // Services
@@ -90,37 +89,31 @@ export class AuthService {
     if (userData.code !== redisCode)
       throw new UnauthorizedException('Wrong code');
 
-    // Creating new user
-    //...
-    //...
-    //...
+    delete userData.code;
 
-    const user = {
-      id: Math.random()
-        .toFixed(0)
-        .slice(2),
-    };
+    // Creating new user
+    const user = await this.userService.createClient(userData);
 
     const [accessToken, refreshToken] = await Promise.all([
-      this.jwtService.issue(phoneNumber, JwtTokenType.ACCESS),
-      this.jwtService.issue(phoneNumber, JwtTokenType.REFRESH),
+      this.jwtService.issue({ phoneNumber }, JwtTokenType.ACCESS),
+      this.jwtService.issue({ phoneNumber }, JwtTokenType.REFRESH),
     ]);
 
     await Promise.all([
       this.redisService.set(
-        `access-${user.id}`,
+        `access-${user._id}`,
         accessToken.token,
         this.configService.get(`jwt.${JwtTokenType.ACCESS}.expiresIn`),
       ),
       this.redisService.set(
-        `refresh-${user.id}`,
+        `refresh-${user._id}`,
         refreshToken.token,
         this.configService.get(`jwt.${JwtTokenType.REFRESH}.expiresIn`),
       ),
     ]);
 
     return {
-      userData: { ...userData, id: user.id },
+      userData: user,
       accessToken,
       refreshToken,
     };

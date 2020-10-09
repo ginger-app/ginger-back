@@ -6,7 +6,6 @@ interface LocationMarketItem extends MarketItem {
 }
 
 export interface Location {
-  id: string;
   parentId: string;
   locationName: string;
   address: string;

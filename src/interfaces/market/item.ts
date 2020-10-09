@@ -5,7 +5,6 @@ export interface MarketItem {
   maxPrice: string;
   image: string;
   suppliers: {
-    id: string;
     name: string;
     price: string;
     discount: number;

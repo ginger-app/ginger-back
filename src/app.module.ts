@@ -1,20 +1,28 @@
 // Core
 import { Module } from '@nestjs/common';
-import { ConfigModule } from '@nestjs/config';
+import { ConfigModule, ConfigService } from '@nestjs/config';
+import { MongooseModule } from '@nestjs/mongoose';
 
 // Services & Modules
 import { RedisModule } from 'nestjs-redis';
-import { DynamoDB } from './modules/dynamo';
 import { AuthModule } from './modules/auth';
+
+// Instruments
+import databaseConfig from './config/database.config';
 
 @Module({
   imports: [
     ConfigModule.forRoot(),
+    MongooseModule.forRootAsync({
+      imports: [ConfigModule.forFeature(databaseConfig)],
+      useFactory: async (configService: ConfigService) =>
+        configService.get<string>('database'),
+      inject: [ConfigService],
+    }),
     RedisModule.register({
       host: 'redis',
       port: 6379,
     }),
-    DynamoDB,
     AuthModule,
   ],
   controllers: [],
