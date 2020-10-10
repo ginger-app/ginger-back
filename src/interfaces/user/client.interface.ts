@@ -24,5 +24,6 @@ export interface Client {
   cookiesAgreed: Boolean;
   registrationDate: Date;
   lastVisit: Date;
+  userpic: string;
   readonly role: string;
 }

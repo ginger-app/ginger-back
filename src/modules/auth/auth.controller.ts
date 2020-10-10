@@ -40,9 +40,7 @@ export class AuthController {
   }
 
   @Post('/get-signin-code')
-  async confirmation(@Body() body: GetSmsCodeDto): Promise<Object> {
-    const { phoneNumber } = body;
-
+  async confirmation(@Body() { phoneNumber }: GetSmsCodeDto): Promise<Object> {
     await this.authService.setConfirmationCode(phoneNumber, 'signin');
 
     return { phoneNumber };
@@ -76,18 +74,18 @@ export class AuthController {
 
   @Post('/signup')
   async signup(@Body() body: any, @Res() res: Response) {
-    const {
-      userData,
-      accessToken,
-      refreshToken,
-    } = await this.authService.signup(body);
+    const { user, accessToken, refreshToken } = await this.authService.signup(
+      body,
+    );
 
     res
       .cookie(REFRESH_TOKEN_COOKIE_NAME, refreshToken.token, {
         ...this.cookieOptions,
         expires: refreshToken.expiresAt,
       })
-      .status(HttpStatus.OK)
-      .json({ userData, accessToken });
+      .status(HttpStatus.CREATED)
+      .json(
+        new SigninResponseDto(accessToken.token, accessToken.expiresAt, user),
+      );
   }
 }

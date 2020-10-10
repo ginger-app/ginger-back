@@ -15,14 +15,14 @@ export class RedisStorageService {
   }
 
   async getClient(): Promise<Redis> {
-    this.logger.log('Getting Redis client...');
+    // this.logger.log('Getting Redis client...');
     this.client = await this.redisService.getClient();
 
     return this.client;
   }
 
   private async checkClient() {
-    this.logger.log('Checking Redis client...');
+    // this.logger.log('Checking Redis client...');
 
     if (!this.client) {
       await this.getClient();

@@ -2,7 +2,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 
 import { Client } from '../../../interfaces';
-import { ClientDto } from '../../user/_dto';
+import { ClientDto } from '../../users/_dto';
 
 /** login response */
 export class SigninResponseDto {

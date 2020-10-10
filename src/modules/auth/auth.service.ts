@@ -2,10 +2,12 @@ import {
   Injectable,
   NotFoundException,
   UnauthorizedException,
-  InternalServerErrorException,
+  BadRequestException,
+  Inject,
+  forwardRef,
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { JwtTokenType } from '../../interfaces';
+import { JwtTokenType, JwtPayload } from '../../interfaces';
 
 // Dto & Interfaces
 import { ClientSignup } from '../../interfaces';
@@ -13,53 +15,83 @@ import { ClientSignup } from '../../interfaces';
 // Services
 // import { CryptoService } from '../crypto';
 import { RedisStorageService } from '../redis';
-import { UserService } from '../user';
+import { UserService } from '../users';
 import { JwtService } from '../jwt';
 
 @Injectable()
 export class AuthService {
   constructor(
-    private readonly redisService: RedisStorageService,
+    @Inject(forwardRef(() => UserService))
     private readonly userService: UserService,
+    private readonly redisService: RedisStorageService,
     private readonly jwtService: JwtService,
     private readonly configService: ConfigService, // private readonly cryptoService: CryptoService,
   ) {}
 
+  private isValidPayload(payload: any): payload is JwtPayload {
+    return (
+      payload &&
+      typeof payload._id === 'string' &&
+      typeof payload.phoneNumber === 'string'
+    );
+  }
+
+  async validateUser(phoneNumber: string, code: string) {
+    const user = await this.userService.getUserByPhoneNumber(phoneNumber);
+    const redisCode = await this.redisService.get(`auth-code-${phoneNumber}`);
+
+    if (code !== redisCode) throw new UnauthorizedException('Wrong code');
+
+    if (!user) throw new NotFoundException('User not found');
+
+    return user;
+  }
+
+  async validateToken(token: string, type: JwtTokenType) {
+    const payload = await this.jwtService.validate(token, type);
+
+    if (!this.isValidPayload(payload))
+      throw new UnauthorizedException('Invalid token payload');
+
+    const user = await this.userService.getUserByPhoneNumber(
+      payload.phoneNumber,
+    );
+
+    if (!user) throw new NotFoundException('User not found');
+
+    return user;
+  }
+
   async setConfirmationCode(phoneNumber: string, type: 'signup' | 'signin') {
-    try {
-      // const code = this.cryptoService.randomStringOfNumbers(6);
-      const code = '111111';
+    // const code = this.cryptoService.randomStringOfNumbers(6);
+    const code = '111111';
 
-      await this.redisService.set(
-        type === 'signup'
-          ? `signup-code-${phoneNumber}`
-          : `signin-code-${phoneNumber}`,
-        code,
-        600,
-      );
+    if (type === 'signin') {
+      const user = await this.userService.getUserByPhoneNumber(phoneNumber);
 
-      return phoneNumber;
-    } catch (error) {
-      throw new InternalServerErrorException(error);
+      if (!user) throw new NotFoundException('User not found');
     }
+
+    await this.redisService.set(`auth-code-${phoneNumber}`, code, 600);
+
+    return phoneNumber;
   }
 
   /**
    * Logs user in and saves tokens into redis
    */
   async signin({ phoneNumber, code }: any): Promise<any> {
-    const user = await this.userService.getUser(phoneNumber);
-    const redisCode = await this.redisService.get(`signin-code-${phoneNumber}`);
-
-    if (code !== redisCode) throw new UnauthorizedException('Wrong code');
-
-    if (!user) {
-      throw new NotFoundException('No such user');
-    }
+    const user = await this.validateUser(phoneNumber, code);
 
     const [accessToken, refreshToken] = await Promise.all([
-      this.jwtService.issue({ phoneNumber }, JwtTokenType.ACCESS),
-      this.jwtService.issue({ phoneNumber }, JwtTokenType.REFRESH),
+      this.jwtService.issue(
+        { phoneNumber, _id: user._id },
+        JwtTokenType.ACCESS,
+      ),
+      this.jwtService.issue(
+        { phoneNumber, _id: user._id },
+        JwtTokenType.REFRESH,
+      ),
     ]);
 
     await Promise.all([
@@ -81,13 +113,13 @@ export class AuthService {
   /**
    * Creates new client account and logs in
    */
-  async signup(userData: ClientSignup) {
-    const { phoneNumber } = userData;
+  async signup(userData: ClientSignup): Promise<any> {
+    const { phoneNumber, email } = userData;
+    const userAlreadyExists =
+      (await this.userService.getUserByPhoneNumber(phoneNumber)) ||
+      (await this.userService.getUserByEmail(email));
 
-    const redisCode = await this.redisService.get(`signup-code-${phoneNumber}`);
-
-    if (userData.code !== redisCode)
-      throw new UnauthorizedException('Wrong code');
+    if (userAlreadyExists) throw new BadRequestException('User already exists');
 
     delete userData.code;
 
@@ -95,8 +127,14 @@ export class AuthService {
     const user = await this.userService.createClient(userData);
 
     const [accessToken, refreshToken] = await Promise.all([
-      this.jwtService.issue({ phoneNumber }, JwtTokenType.ACCESS),
-      this.jwtService.issue({ phoneNumber }, JwtTokenType.REFRESH),
+      this.jwtService.issue(
+        { phoneNumber, _id: user._id },
+        JwtTokenType.ACCESS,
+      ),
+      this.jwtService.issue(
+        { phoneNumber, _id: user._id },
+        JwtTokenType.REFRESH,
+      ),
     ]);
 
     await Promise.all([
@@ -112,10 +150,6 @@ export class AuthService {
       ),
     ]);
 
-    return {
-      userData: user,
-      accessToken,
-      refreshToken,
-    };
+    return { user, accessToken, refreshToken };
   }
 }

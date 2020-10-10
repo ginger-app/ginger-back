@@ -11,7 +11,6 @@ export class AccessStrategy extends PassportStrategy(Strategy, 'access') {
   }
 
   validate(token: string) {
-    // return this.authService.validateToken(token, JwtTokenType.ACCESS);
-    return token;
+    return this.authService.validateToken(token, JwtTokenType.ACCESS);
   }
 }

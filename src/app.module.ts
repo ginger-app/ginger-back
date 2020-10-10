@@ -6,6 +6,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 // Services & Modules
 import { RedisModule } from 'nestjs-redis';
 import { AuthModule } from './modules/auth';
+import { UserModule } from './modules/users';
 
 // Instruments
 import databaseConfig from './config/database.config';
@@ -24,6 +25,7 @@ import databaseConfig from './config/database.config';
       port: 6379,
     }),
     AuthModule,
+    UserModule,
   ],
   controllers: [],
   providers: [],

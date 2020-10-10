@@ -9,7 +9,8 @@ export default registerAs('app', () => ({
   domain: process.env.DOMAIN || 'api.development.roquefore.dev',
   cors: {
     allowedHeaders: ['Origin', 'Content-Type', 'Accept', 'Authorization'],
-    origin: (process.env.CORS_ALLOWED_ORIGIN || '*').split(' '),
+    // origin: (process.env.CORS_ALLOWED_ORIGIN || '*').split(' '),
+    origin: '*',
     credentials: true,
   } as CorsOptions,
 }));

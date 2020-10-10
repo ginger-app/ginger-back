@@ -42,6 +42,9 @@ export class ClientDto {
   @ApiProperty({ title: `User's role` })
   role: string;
 
+  @ApiProperty({ title: `User's avatar` })
+  userpic: string;
+
   constructor(user: Client) {
     this.name = user.name;
     this.email = user.email;
@@ -54,5 +57,6 @@ export class ClientDto {
     this.paymentMethods = user.paymentMethods;
     this.analyticsData = user.analyticsData;
     this.role = user.role;
+    this.userpic = user.userpic;
   }
 }

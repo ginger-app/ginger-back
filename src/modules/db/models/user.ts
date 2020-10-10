@@ -47,8 +47,8 @@ export class Client {
   @Prop({ default: [] })
   paymentMethods: string[];
 
-  @Prop({ default: {} })
-  analyticsData: Object;
+  @Prop({ default: [] })
+  analyticsData: Array<any>;
 
   @Prop({ default: 'client' })
   role: string;
@@ -58,6 +58,12 @@ export class Client {
 
   @Prop()
   registrationDate: Date;
+
+  @Prop({
+    default:
+      'https://opto.s3.eu-north-1.amazonaws.com/users/dds1shd-c3d83a1e-c0fb-4835-8509-b37a56cbb500.png',
+  })
+  userpic: string;
 }
 
 export const ClientSchema = SchemaFactory.createForClass(Client);
