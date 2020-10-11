@@ -1,4 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { Schema } from 'mongoose';
 
 import { Location } from '../../../interfaces/location';
 import { Order } from '../../../interfaces/order';
@@ -22,8 +23,8 @@ export class ClientDto {
 
   @ApiProperty({ title: `User's orders` })
   orders: {
-    suppliers: Array<any>;
-    categories: Array<any>;
+    suppliers: Array<Schema.Types.ObjectId>;
+    categories: Array<Schema.Types.ObjectId>;
     data: Order[];
   };
 

@@ -7,6 +7,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { RedisModule } from 'nestjs-redis';
 import { AuthModule } from './modules/auth';
 import { UserModule } from './modules/users';
+import { MarketModule } from './modules/market';
 
 // Instruments
 import databaseConfig from './config/database.config';
@@ -26,6 +27,7 @@ import databaseConfig from './config/database.config';
     }),
     AuthModule,
     UserModule,
+    MarketModule,
   ],
   controllers: [],
   providers: [],
