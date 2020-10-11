@@ -5,6 +5,7 @@ import { Controller, Get, Post, Logger } from '@nestjs/common';
 import { MarketService } from './market.service';
 
 // Instruments
+import { GetAllCategoriesResponse } from '../../interfaces';
 import { MarketCategoryDto } from './_dto';
 import { CategoryDocument } from '../db/models';
 
@@ -14,8 +15,8 @@ export class MarketController {
   constructor(private readonly marketService: MarketService) {}
 
   @Get('/categories')
-  async getMarketCategories(): Promise<Omit<MarketCategoryDto, 'items'>[]> {
-    return await this.marketService.getAllCategories();
+  async getMarketCategories(): Promise<GetAllCategoriesResponse> {
+    return { data: await this.marketService.getAllCategories() };
   }
 
   @Get('/categories/:id')
