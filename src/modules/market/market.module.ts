@@ -5,8 +5,9 @@ import { MongooseModule } from '@nestjs/mongoose';
 // Controllers
 import { MarketController } from './market.controller';
 
-// Srvices
+// Services
 import { MarketService } from './market.service';
+import { CryptoService } from '../crypto';
 
 // Instruments
 import { CategorySchema, SubcategorySchema } from '../db/models';
@@ -19,6 +20,6 @@ import { CategorySchema, SubcategorySchema } from '../db/models';
     ]),
   ],
   controllers: [MarketController],
-  providers: [MarketService],
+  providers: [MarketService, CryptoService],
 })
 export class MarketModule {}

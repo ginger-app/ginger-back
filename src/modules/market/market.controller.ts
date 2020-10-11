@@ -1,5 +1,5 @@
 // Core
-import { Controller, Get, Post, Logger } from '@nestjs/common';
+import { Controller, Get, Post, Logger, Body } from '@nestjs/common';
 
 // Services
 import { MarketService } from './market.service';
@@ -26,7 +26,7 @@ export class MarketController {
 
   // Secured
   @Post('/categories')
-  async createNewCategory(): Promise<CategoryDocument> {
-    return await this.marketService.createNewCategory();
+  async createNewCategory(@Body() body): Promise<CategoryDocument> {
+    return await this.marketService.createNewCategory(body.name);
   }
 }

@@ -8,6 +8,9 @@ export type CategoryDocument = Category & Document;
 
 @Schema()
 export class Category {
+  @Prop()
+  _id: string;
+
   @Prop({ required: true })
   name: string;
 
