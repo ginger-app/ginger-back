@@ -9,7 +9,7 @@ export class Subcategory {
   name: string;
 
   @Prop({ default: [] })
-  items: MongooseSchema.Types.ObjectId[];
+  items: string[];
 }
 
 export const SubcategorySchema = SchemaFactory.createForClass(Subcategory);

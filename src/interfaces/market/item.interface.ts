@@ -1,14 +1,10 @@
+import { Schema } from 'mongoose';
+
 export interface MarketItem {
   name: string;
   unit: string;
-  minPrice: string;
-  maxPrice: string;
-  image: string;
-  suppliers: {
-    name: string;
-    price: string;
-    discount: number;
-    rating: number;
-    conditions: Array<string>;
-  }[];
+  minPrice: number;
+  maxPrice: number;
+  image?: string;
+  suppliers: Schema.Types.ObjectId[];
 }

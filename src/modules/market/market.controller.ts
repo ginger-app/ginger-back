@@ -1,12 +1,11 @@
 // Core
-import { Controller, Get, Post, Logger, Body } from '@nestjs/common';
+import { Controller, Get, Post, Logger, Body, Param } from '@nestjs/common';
 
 // Services
 import { MarketService } from './market.service';
 
 // Instruments
 import { GetAllCategoriesResponse } from '../../interfaces';
-import { MarketCategoryDto } from './_dto';
 import { CategoryDocument } from '../db/models';
 
 @Controller('market')
@@ -20,13 +19,20 @@ export class MarketController {
   }
 
   @Get('/categories/:id')
-  async getMarketCategory(): Promise<MarketCategoryDto | null> {
-    return null;
+  async getMarketCategory(@Param() { id }): Promise<CategoryDocument> {
+    return await this.marketService.getCategoryData(id);
   }
 
   // Secured
   @Post('/categories')
   async createNewCategory(@Body() body): Promise<CategoryDocument> {
     return await this.marketService.createNewCategory(body.name);
+  }
+
+  @Post('/test-items')
+  async createTestSetOfItems(): Promise<Boolean> {
+    await this.marketService.createTestSetOfItems();
+
+    return true;
   }
 }

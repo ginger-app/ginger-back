@@ -1,9 +1,16 @@
 // Core
 import { ApiProperty } from '@nestjs/swagger';
+import { Schema } from 'mongoose';
 
-import { FilteringOption, MarketItem } from '../../../interfaces';
+import { MarketItem } from '../../../interfaces';
 
 export class MarketCategoryDto {
+  @ApiProperty({
+    title: 'Category id - generated automatically from name',
+    type: String,
+  })
+  _id: string;
+
   @ApiProperty({ title: 'Market category name', type: String })
   name: string;
 
@@ -14,7 +21,7 @@ export class MarketCategoryDto {
     title: 'Filtering options for category a.k.a. Subcategory',
     type: Array,
   })
-  fileringOptions: FilteringOption[];
+  filteringOptions: Schema.Types.ObjectId[];
 
   @ApiProperty({ title: 'A list of items in a category', type: Array })
   items: MarketItem[];

@@ -2,8 +2,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document, Schema as MongoSchema } from 'mongoose';
 
-import { FilteringOption } from '../../../interfaces';
-
 export type CategoryDocument = Category & Document;
 
 @Schema()
@@ -20,11 +18,11 @@ export class Category {
   })
   image: string;
 
-  @Prop({ default: [] })
-  fileringOptions: FilteringOption[];
+  @Prop({ default: [], ref: 'Subcategory' })
+  filteringOptions: MongoSchema.Types.ObjectId[];
 
-  @Prop({ default: [] })
-  items: MongoSchema.Types.ObjectId[];
+  @Prop({ default: [], ref: 'MarketItems' })
+  items: string[];
 }
 
 export const CategorySchema = SchemaFactory.createForClass(Category);

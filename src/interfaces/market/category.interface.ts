@@ -10,6 +10,6 @@ export interface MarketCategory {
   _id: Schema.Types.ObjectId;
   name: string;
   image: string;
-  fileringOptions: FilteringOption[];
+  filteringOptions: Schema.Types.ObjectId[];
   items: Schema.Types.ObjectId[];
 }
