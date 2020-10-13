@@ -59,7 +59,14 @@ export class MarketService {
   }
 
   async updateCategory(id: string, data: any): Promise<CategoryDocument> {
-    return await this.categoryModel.findByIdAndUpdate(id, data);
+    const updatedCategory = await this.categoryModel.findByIdAndUpdate(
+      id,
+      data,
+    );
+
+    console.log(updatedCategory);
+
+    return updatedCategory;
   }
 
   async addItemToCategory(
@@ -93,13 +100,51 @@ export class MarketService {
     return newItem;
   }
 
-  async createTestSetOfItems(): Promise<void> {
+  async createTestSetOfItems(): Promise<any> {
     const categories = await this.getAllCategories();
 
-    categories.forEach(
+    const nouns = [
+      'місяць',
+      'скарб',
+      'щука',
+      'торт',
+      'велосипед',
+      'меню',
+      'стадіон',
+      'спорт',
+      'фломастер',
+      'ромашка',
+      'спорт',
+      'парк',
+      'папір',
+      'автобус',
+      'лелека',
+    ];
+
+    const adjectives = [
+      'холодний',
+      'відчайдушний',
+      'безтурботний',
+      'останній',
+      'бездоганний',
+      'активний',
+      'екстремальний',
+      'бездоганний',
+      'значний',
+      'всесвітній',
+      'добрий',
+      'злий',
+      'космічний',
+      'найбільший',
+      'неймовірний',
+    ];
+
+    return categories.map(
       async ({ _id }) =>
         await this.createNewMarketItem(_id, {
-          name: 'Шоколадна брокколі',
+          name: `${adjectives[Math.floor(Math.random() * adjectives.length)]} ${
+            nouns[Math.floor(Math.random() * nouns.length)]
+          }`,
           unit: 'кг',
           minPrice: 100,
           maxPrice: 120,

@@ -29,10 +29,8 @@ export class MarketController {
     return await this.marketService.createNewCategory(body.name);
   }
 
-  @Post('/test-items')
-  async createTestSetOfItems(): Promise<Boolean> {
-    await this.marketService.createTestSetOfItems();
-
-    return true;
-  }
+  // @Post('/test-items')
+  // async createTestSetOfItems(): Promise<any> {
+  //   return await this.marketService.createTestSetOfItems();
+  // }
 }
