@@ -8,7 +8,7 @@ export default registerAs('app', () => ({
   cookieSecret: process.env.COOKIE_SECRET || 'opto-cookie-secret',
   domain: process.env.DOMAIN || 'api.development.roquefore.dev',
   cors: {
-    allowedHeaders: ['Origin', 'Content-Type', 'Accept', 'Authorization'],
+    // allowedHeaders: ['Origin', 'Content-Type', 'Accept', 'Authorization'],
     // origin: (process.env.CORS_ALLOWED_ORIGIN || '*').split(' '),
     origin: '*',
     credentials: true,
